@@ -5,6 +5,13 @@ class Consultation {
 	public $file;
 	public $elements;
 
+	function charge($filename) {
+		if (file_exists($filename)) {
+			require $filename;
+		}
+		$this->elements = $elements;
+	}
+	
 	function charge_next() {
 		require __DIR__."/../configuration/elements/201406-groupe-parlementaire.php";
 		$this->elements = $elements;
@@ -48,6 +55,10 @@ class Consultation {
 	
 	function url_to_summary() {
 		return $GLOBALS['config']['url']."index.php?page=summary.php";
+	}
+	
+	function url_to_thankyou() {
+		return $GLOBALS['config']['url']."index.php?page=thankyou.php";
 	}
 	
 	function show_procedure() {
@@ -144,7 +155,7 @@ class Consultation {
 		if ($vote->is_done()) {
 			$vote->load();
 			$html = "<div class=\"consultation-information\">";
-			$html .= __("Your answers were found : you'll find them below. Thank you for voting.");
+			$html .= __("Your answers were found : you'll find them below.");
 			$html .= "</div>";
 			
 			$answers = new Answers();
@@ -160,6 +171,12 @@ class Consultation {
 			}
 			$html .= "</dl>";
 			
+			$html .= "<div class=\"consultation-information\">";
+			$html .= __("If you want to change your answers, you can still change them.");
+			$html .= "</div>";
+			$html .= "<p class=\"consultation-next btn btn-success\">".Html_Tag::a($this->url_to_thankyou(), __("Agree with this vote"))."</p>";
+			$html .= "<p class=\"consultation-next btn btn-warning\">".Html_Tag::a($this->url_to_vote(), __("Move on to vote"))."</p>";
+				
 		} else {
 			$html = "<div class=\"consultation-information\">";
 			$html .= __("Your answers were not found. Please vote first.");
@@ -169,16 +186,31 @@ class Consultation {
 		return $html;
 	}
 	
+	function show_thankyou() {
+		$html = "<div class=\"consultation-information\">";
+		$html .= "<p>".__("Thank you for voting.")."</p>";
+		$html .= "<p>".__("This consultation will be closed definitely on %s.", array(date("d/m/Y H:i", $this->elements['period']['stop'])))."</p>";
+		$html .= "</div>";
+		
+		return $html;
+	}
+
 	function clean_answers($answers) {
 		$answers_cleaned = $answers;
 		return $answers_cleaned;
 	}
 	
 	function are_answers_coherent($answers) {
-		if (count($answers) != count($this->elements['choices'])) {
-			return false;
-		} else {
-			return true;
+		$values = array();
+		for ($i = 1; $i <= count($this->elements['choices']); $i++) {
+			$values[] = $i;
+		}
+		switch (true) {
+			case array_diff(array_keys($answers), array_keys($this->elements['choices'])) != array():
+			case array_diff($values, array_values($answers)) != array(): 
+				return false;
+			default:
+				return true;
 		}
 	}
 
