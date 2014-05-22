@@ -36,6 +36,7 @@ $__['deletion OK'] = "suppression OK";
 $__['deletions OK'] = "suppressions OK";
 $__['If you want to change your answers, you can still change them.'] = "Si vous le souhaitez, vous pouvez encore changer votre vote.";
 $__['Let\'s vote'] = "Place au vote";
+$__['Move back to vote'] = "Revenir sur le vote";
 $__['Move on to opinions'] = "Passer aux avis";
 $__['Move on to vote'] = "Passer au vote";
 $__['No consultation is currently open.'] = "Aucune consultation n'est ouverte pour le moment.";
@@ -55,3 +56,4 @@ $__['Your answers are not coherent. Please make sure you\'re ranking all the pos
 $__['Your answers were found : you\'ll find them below.'] = "Vos choix ont bien été retrouvés : vous les retrouverez ci-dessous.";
 $__['Your answers were not found. Please vote first.'] = "Vos choix n'ont pas été trouvés. Merci de bien vouloir commencer par voter.";
 $__['Your answers were not saved. Please contact the technical team : tech@nouvelledonne.fr.'] = "Vos choix n'ont pas été sauvegardés. Merci de bien vouloir contacter l'équipe technique : tech@nouvelledonne.fr";
+$__['Your vote has already been registered on <strong>%s</strong>.'] = "Votre vote a déjà été pris en compte le <strong>%s</strong>.";

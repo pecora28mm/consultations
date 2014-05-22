@@ -175,13 +175,13 @@ class Consultation {
 			$html .= __("If you want to change your answers, you can still change them.");
 			$html .= "</div>";
 			$html .= "<p class=\"consultation-next btn btn-success\">".Html_Tag::a($this->url_to_thankyou(), __("Agree with this vote"))."</p>";
-			$html .= "<p class=\"consultation-next btn btn-warning\">".Html_Tag::a($this->url_to_vote(), __("Move on to vote"))."</p>";
+			$html .= "<p class=\"consultation-next btn btn-warning\">".Html_Tag::a($this->url_to_vote(), __("Move back to vote"))."</p>";
 				
 		} else {
 			$html = "<div class=\"consultation-information\">";
 			$html .= __("Your answers were not found. Please vote first.");
 			$html .= "</div>";
-			$html .= "<p class=\"consultation-next btn btn-warning\">".Html_Tag::a($this->url_to_vote(), __("Move on to vote"))."</p>";
+			$html .= "<p class=\"consultation-next btn btn-warning\">".Html_Tag::a($this->url_to_vote(), __("Move back to vote"))."</p>";
 		}
 		return $html;
 	}

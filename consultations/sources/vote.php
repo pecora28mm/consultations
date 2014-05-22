@@ -66,10 +66,14 @@ class Vote extends Record {
 			$this->answers = $answers_temp;
 			return false;
 		}
+	}
+	
+	function show_summary() {
+		$html = "<div class=\"consultation-message-light\">";
+		$html .= __("Your vote has already been registered on <strong>%s</strong>.", array(date("d/m/Y H:i", $this->time)));
+		$html .= "</div>";
 		
-		
-		
-		return false;
+		return $html;
 	}
 	
 	function match_existing($patterns = array("name"), $table = "votes", $db = null) {

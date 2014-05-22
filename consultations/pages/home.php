@@ -7,6 +7,16 @@ $consultation = new Consultation();
 $consultation->charge_next();
 if ($consultation->is_open()) {
 	echo $consultation->show_opened_sign();
+	
+	$vote = new Vote();
+	$vote->charge($consultation, new Member($_SESSION['consultation']['members_id']));
+	if ($vote->match_existing(array("members_id", "consultation_hash"))) {
+		$vote->load();
+	}
+	if ($vote->is_done()) {
+		echo $vote->show_summary();
+	}
+
 	echo $consultation->show_procedure();
 } else {
 	echo $consultation->show_closed_sign();
