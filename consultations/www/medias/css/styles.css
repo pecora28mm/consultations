@@ -1,0 +1,21 @@
+.mask { list-style: none; display: none; }
+
+.consultation-error { width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; color: #fff; background-color: #d9534f; border-color: #d43f3a; }
+.consultation-next { font-size: 1.5em; width: 100%; margin-top: 2em; }
+.consultation-next a { color: #ffffff; text-decoration: none; }
+.consultation-question { font-size: 1.3em; width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; border: 1px solid grey; }
+.consultation-submit { font-size: 1.5em; margin-top: 2em; }
+.consultation-answers { font-size: 1.3em; width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; border: 1px solid grey; }
+
+div.container-max { font-size: 1.3em; }
+div.container-max input { width: 100%; }
+div.container-max input.input-date { width: 50px; }
+div.container-max input.input-ajax-checkbox { display: inline; width: auto; margin-right: 5px; }
+div.container-max label { display: block; }
+div.container-max textarea { width: 100%; }
+div.container-max input[type=submit] { margin-top: 25px; }
+div.container-max p.details { margin-top: 25px; font-style: italic; color: #7e7e7e; }
+div.container-max table { width: 100%; }
+div.container-max tr > th { background-color: #f8f8f8; border-bottom: 1px solid #7e7e7e; }
+div.container-max td, th { padding: 2px 10px; }
+div.container-max h2 { margin: 10px 0 10px 0; }
