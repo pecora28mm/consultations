@@ -25,6 +25,7 @@ $array_week[6] = "Samedi";
 $array_week[7] = "Dimanche";
 
 $__['--'] = "--";
+$__['A consultation is currently open: <strong>%s</strong>.'] = "Une consultation est actuellement en cours : <strong>%s</strong>";
 $__['add OK'] = "ajout OK";
 $__['adds OK'] = "ajouts OK";
 $__['answer'] = "réponse";
@@ -35,6 +36,7 @@ $__['deletions OK'] = "suppressions OK";
 $__['Let\'s vote'] = "Place au vote";
 $__['Move on to opinions'] = "Passer aux avis";
 $__['Move on to vote'] = "Passer au vote";
+$__['No consultation is currently open.'] = "Aucune consultation n'est ouverte pour le moment.";
 $__['Preambule : list of facts'] = "Préambule : liste de documents factuels";
 $__['Procedure details'] = "Détails de la procédure";
 $__['Opinions : list of views'] = "Opinions : liste d'avis";

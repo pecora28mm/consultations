@@ -6,6 +6,7 @@ $_SESSION['consultation']['members_id'] = isset($_SESSION['consultation']['membe
 $consultation = new Consultation();
 $consultation->charge_next();
 if ($consultation->is_open()) {
+	echo $consultation->show_opened_sign();
 	echo $consultation->show_procedure();
 } else {
 	echo $consultation->show_closed_sign();

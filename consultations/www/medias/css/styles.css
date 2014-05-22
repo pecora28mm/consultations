@@ -1,5 +1,6 @@
 .mask { list-style: none; display: none; }
 
+.consultation-message { width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; color: #fff; background-color: #39b3d7; border-color: #269abc; }
 .consultation-error { width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; color: #fff; background-color: #d9534f; border-color: #d43f3a; }
 .consultation-next { font-size: 1.5em; width: 100%; margin-top: 2em; }
 .consultation-next a { color: #ffffff; text-decoration: none; }

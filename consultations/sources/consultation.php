@@ -26,6 +26,22 @@ class Consultation {
 		}
 	}
 	
+	function show_opened_sign() {
+		$html = "<div class=\"consultation-message\">";
+		$html .= __("A consultation is currently open: <strong>%s</strong>.", array($this->elements['question']));
+		$html .= "</div>";
+		
+		return $html;
+	}
+	
+	function url_to_preambule() {
+		return $GLOBALS['config']['url']."index.php?page=preambule.php";
+	}
+	
+	function url_to_opinions() {
+		return $GLOBALS['config']['url']."index.php?page=opinions.php";
+	}
+	
 	function url_to_vote() {
 		return $GLOBALS['config']['url']."index.php?page=vote.php";
 	}
@@ -37,8 +53,8 @@ class Consultation {
 	function show_procedure() {
 		$html = "<h1>".__("Procedure details")."</h1>";
 		$html .= "<ol>";
-		$html .= "<li>".Html_Tag::a("index.php?page=preambule.php", __("Preambule : list of facts"))."</li>";
-		$html .= "<li>".Html_Tag::a("index.php?page=opinions.php", __("Opinions : list of views"))."</li>";
+		$html .= "<li>".Html_Tag::a($this->url_to_preambule(), __("Preambule : list of facts"))."</li>";
+		$html .= "<li>".Html_Tag::a($this->url_to_opinions(), __("Opinions : list of views"))."</li>";
 		$html .= "<li>".Html_Tag::a($this->url_to_vote(), __("Vote"))."</li>";
 		$html .= "<li>".Html_Tag::a($this->url_to_summary(), __("Summary"))."</li>";
 		$html .= "</ol>";
@@ -54,10 +70,10 @@ class Consultation {
 		$html = "<h1>".__("Preambule : list of facts")."</h1>";
 		$html .= "<ul>";
 		foreach ($this->elements['preambules'] as $url => $preambule) {
-			$html .= "<li>".Html_Tag::a($url, $preambule)."</li>";
+			$html .= "<li>".Html_Tag::a($url, $preambule, array('target' => "_blank"))."</li>";
 		}
 		$html .= "</ul>";
-		$html .= "<p class=\"consultation-next btn btn-success\">".Html_Tag::a("index.php?page=opinions.php", __("Move on to opinions"))."</p>";
+		$html .= "<p class=\"consultation-next btn btn-success\">".Html_Tag::a($this->url_to_opinions(), __("Move on to opinions"))."</p>";
 		
 		return $html;
 	}
@@ -70,7 +86,7 @@ class Consultation {
 		$html = "<h1>".__("Opinions : list of views")."</h1>";
 		$html .= "<ul>";
 		foreach ($this->elements['opinions'] as $url => $opinion) {
-			$html .= "<li>".Html_Tag::a($url, $opinion)."</li>";
+			$html .= "<li>".Html_Tag::a($url, $opinion, array('target' => "_blank"))."</li>";
 		}
 		$html .= "</ul>";
 		$html .= "<p class=\"consultation-next btn btn-success\">".Html_Tag::a($this->url_to_vote(), __("Move on to vote"))."</p>";
@@ -167,7 +183,11 @@ class Consultation {
 	}
 
 	function show_closed_sign() {
+		$html = "<div class=\"consultation-error\">";
+		$html .= __("No consultation is currently open.");
+		$html .= "</div>";
 		
+		return $html;
 	}
 	
 	function show_problem_with_save() {
