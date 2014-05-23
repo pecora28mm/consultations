@@ -127,7 +127,7 @@ class Consultation {
 		$html .= "</tr>";
 		foreach ($this->elements['choices'] as $key => $value) {
 			$html .= "<tr>";
-			$html .= "<td>".$key."</td>";
+			$html .= "<td>".$value."</td>";
 			for ($i = 1; $i <= $i_max; $i++) {
 				$choice = new Html_Input("consultation[answers][".$key."]", $i, "radio");
 				$html .= "<td>".$choice->input()."</td>";
