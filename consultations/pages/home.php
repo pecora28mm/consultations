@@ -1,7 +1,7 @@
 <?php
 /* Nouvelle Donne -- Copyright (C) Perrick Penet-Avez 2014 - 2014 */
 
-$_SESSION['consultation']['members_id'] = isset($_SESSION['consultation']['members_id']) ? $_SESSION['consultation']['members_id'] : 1;
+$_SESSION['consultation']['members_id'] = isset($_GET['members_id']) ? $_GET['members_id'] : (isset($_SESSION['consultation']['members_id']) ? $_SESSION['consultation']['members_id'] : 1);
 
 $consultation = new Consultation();
 $consultation->charge_next();
