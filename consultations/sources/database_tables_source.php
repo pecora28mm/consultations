@@ -17,9 +17,20 @@ class Database_Tables_Source {
 				"CREATE TABLE answers (
 				  id INT(21) NOT NULL AUTO_INCREMENT,
 				  members_id INT(21) NOT NULL DEFAULT '0',
-				  consultation_hash MEDIUMTEXT NOT NULL DEFAULT '',
+				  consultations_hash MEDIUMTEXT NOT NULL DEFAULT '',
 				  choice MEDIUMTEXT NOT NULL DEFAULT '',
 				  position INT(11) DEFAULT NULL,
+				  time INT(10) NOT NULL DEFAULT '0',
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+			),
+			'consultations' => array(
+				"CREATE TABLE consultations (
+				  id INT(21) NOT NULL AUTO_INCREMENT,
+				  name MEDIUMTEXT NOT NULL DEFAULT '',
+				  description MEDIUMTEXT NOT NULL DEFAULT '',
+				  elements MEDIUMTEXT NOT NULL DEFAULT '',
+				  hash MEDIUMTEXT NOT NULL DEFAULT '',
 				  time INT(10) NOT NULL DEFAULT '0',
 				  PRIMARY KEY (`id`)
 				) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
@@ -28,7 +39,7 @@ class Database_Tables_Source {
 				"CREATE TABLE votes (
 				  id INT(21) NOT NULL AUTO_INCREMENT,
 				  members_id INT(21) NOT NULL DEFAULT '0',
-				  consultation_hash MEDIUMTEXT NOT NULL DEFAULT '',
+				  consultations_hash MEDIUMTEXT NOT NULL DEFAULT '',
 				  day INT(10) NOT NULL DEFAULT '0',
 				  hash MEDIUMTEXT NOT NULL DEFAULT '',
 				  time INT(10) NOT NULL DEFAULT '0',

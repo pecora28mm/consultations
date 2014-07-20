@@ -12,6 +12,7 @@ require __DIR__."/record.php";
 require __DIR__."/answer.php";
 require __DIR__."/answers.php";
 require __DIR__."/consultation.php";
+require __DIR__."/consultations.php";
 require __DIR__."/html_checkbox.php";
 require __DIR__."/html_input.php";
 require __DIR__."/html_input_ajax.php";
@@ -23,6 +24,7 @@ require __DIR__."/html_tag.php";
 require __DIR__."/html_textarea.php";
 require __DIR__."/member.php";
 require __DIR__."/template.php";
+require __DIR__."/template_admin.php";
 require __DIR__."/vote.php";
 
 if (function_exists("date_default_timezone_set")) {

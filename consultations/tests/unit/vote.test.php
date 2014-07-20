@@ -45,7 +45,7 @@ class tests_Vote extends TableTestCase {
 		$vote = new Vote();
 		$this->assertTrue($vote->charge(new Consultation(), new Member(1)));
 		$this->assertEqual($vote->members_id, 1);
-		$this->assertEqual($vote->consultation_hash, "dcca48101505dd86b703689a604fe3c4");
+		$this->assertEqual($vote->consultations_hash, "dcca48101505dd86b703689a604fe3c4");
 	}
 	
 	function test_save_load() {
@@ -58,7 +58,7 @@ class tests_Vote extends TableTestCase {
 		$vote_loaded->load();
 		
 		$this->assertEqual($vote_loaded->members_id, $vote->members_id);
-		$this->assertEqual($vote_loaded->consultation_hash, $vote->consultation_hash);
+		$this->assertEqual($vote_loaded->consultations_hash, $vote->consultations_hash);
 		$this->assertEqual($vote_loaded->day, $vote->day);
 		
 		$this->truncateTable("votes");

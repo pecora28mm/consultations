@@ -4,7 +4,7 @@
 class Vote extends Record {
 	public $id = 0;
 	public $members_id = 0;
-	public $consultation_hash = "";
+	public $consultations_hash = "";
 	public $hash = "";
 	public $day = 0;
 	public $time = 0;
@@ -29,14 +29,14 @@ class Vote extends Record {
 				return false;
 			default:
 				$this->members_id = $this->member->id;
-				$this->consultation_hash = $this->consultation->hash();
+				$this->consultations_hash = $this->consultation->hash();
 				$this->day = (isset($day) and (int)$day > 0) ? (int)$day : time();
 				return true; 
 		}
 	}
 	
 	function hash() {
-		return md5(serialize(array((string)$this->members_id, (string)$this->consultation_hash, $this->answers, (string)$this->day))); 
+		return md5(serialize(array((string)$this->members_id, (string)$this->consultations_hash, $this->answers, (string)$this->day))); 
 	}
 
 	function is_coherent() {
@@ -50,7 +50,7 @@ class Vote extends Record {
 	function is_done() {
 		$answers = new Answers();
 		$answers->members_id = $this->members_id;
-		$answers->consultation_hash = $this->consultation_hash;
+		$answers->consultations_hash = $this->consultations_hash;
 		$answers->select();
 		
 		$answers_temp = $this->answers;
@@ -95,14 +95,14 @@ class Vote extends Record {
 		if (is_array($this->answers)) {
 			$answers_old = new Answers();
 			$answers_old->members_id = $this->members_id;
-			$answers_old->consultation_hash = $this->consultation_hash;
+			$answers_old->consultations_hash = $this->consultations_hash;
 			$answers_old->select();
 			$answers_old->delete();
 			
 			foreach ($this->answers as $choice => $position) {
 				$answer = new Answer();
 				$answer->members_id = $this->members_id;
-				$answer->consultation_hash = $this->consultation_hash;
+				$answer->consultations_hash = $this->consultations_hash;
 				$answer->choice = $choice;
 				$answer->position = $position;
 				$answer->save();
@@ -124,7 +124,7 @@ class Vote extends Record {
 		$result = $this->db->id("
 			INSERT INTO votes
 			SET members_id = ".(int)$this->members_id.",
-			consultation_hash = ".$this->db->quote($this->consultation_hash).",
+			consultations_hash = ".$this->db->quote($this->consultations_hash).",
 			day = ".(int)$this->day.",
 			hash = ".$this->db->quote($this->hash).",
 			time = ".time()
@@ -140,7 +140,7 @@ class Vote extends Record {
 		$result = $this->db->query("
 			UPDATE votes
 			SET members_id = ".(int)$this->members_id.",
-			consultation_hash = ".$this->db->quote($this->consultation_hash).",
+			consultations_hash = ".$this->db->quote($this->consultations_hash).",
 			day = ".(int)$this->day.",
 			hash = ".$this->db->quote($this->hash).",
 			time = ".time()."

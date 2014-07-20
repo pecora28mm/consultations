@@ -41,23 +41,23 @@ class Html_Input_Date extends Html_Input {
 	function input() {
 		$string = "<nobr>";
 		
-		$d = new Html_Input($this->name."[d]", (($this->value) ? adodb_date("d", $this->value) : ""));
+		$d = new Html_Input($this->name."[d]", (($this->value) ? date("d", $this->value) : ""));
 		$d->properties = $this->properties + array(
 			'class' => "input-date",
 			'size' => 3,
 		);
-		$m = new Html_Input($this->name."[m]", (($this->value) ? adodb_date("m", $this->value) : ""));
+		$m = new Html_Input($this->name."[m]", (($this->value) ? date("m", $this->value) : ""));
 		$m->properties = $this->properties + array(
 			'class' => "input-date",
 			'size' => 3,
 		);
-		$Y = new Html_Input($this->name."[Y]", (($this->value) ? adodb_date("Y", $this->value) : ""));
+		$Y = new Html_Input($this->name."[Y]", (($this->value) ? date("Y", $this->value) : ""));
 		$Y->properties = $this->properties + array(
 			'class' => "input-date",
 			'size' => 6,
 		);
 
-		$hours = new Html_Input($this->name."[hours]", (($this->value) ? adodb_date("hours", $this->value) : ""));
+		$hours = new Html_Input($this->name."[hours]", (($this->value) ? date("hours", $this->value) : ""));
 		$hours->properties = $this->properties + array(
 			'class' => "input-date",
 			'size' => 3,
@@ -95,7 +95,7 @@ class Html_Input_Date extends Html_Input {
 			$input_calendar .= "<td colspan=\"7\" valign=\"center\" nowrap=\"nowrap\">\n";
 			$input_calendar .= "<select id=\"".$this->name("calendarmonth")."\" onchange=\"MakeCalendar('".$this->name("calendar")."')\"> \n";
 			for ($i=1; $i <= 12; $i++) {
-				if ($i == adodb_date("m", $value)) {
+				if ($i == date("m", $value)) {
 					$selected = " selected=\"selected\"";
 				} else {
 					$selected = "";
@@ -104,10 +104,10 @@ class Html_Input_Date extends Html_Input {
 			}
 			$input_calendar .= "</select> \n";
 			$input_calendar .= "<select id=\"".$this->name("calendaryear")."\" onchange=\"MakeCalendar('".$this->name("calendar")."')\"> \n";
-			$start_year = adodb_date("Y", strtotime("-5 years"));
-			$stop_year = adodb_date("Y", strtotime("+5 years"));
+			$start_year = date("Y", strtotime("-5 years"));
+			$stop_year = date("Y", strtotime("+5 years"));
 			for ($i = $start_year; $i < $stop_year; $i++) {
-				if ($i == adodb_date("Y", $value)) {
+				if ($i == date("Y", $value)) {
 					$selected = " selected=\"selected\"";
 				} else {
 					$selected = "";

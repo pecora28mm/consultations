@@ -2,7 +2,7 @@
 /* Nouvelle Donne -- Copyright (C) Perrick Penet-Avez 2014 - 2014 */
 
 $consultation = new Consultation();
-$consultation->charge_next();
+$consultation->load($_SESSION['consultation']['consultations_id']);
 
 $answers = array();
 if (isset($_POST['consultation'])) {
@@ -10,7 +10,7 @@ if (isset($_POST['consultation'])) {
 	if ($consultation->are_answers_coherent($answers)) {
 		$vote = new Vote();
 		$vote->charge($consultation, new Member($_SESSION['consultation']['members_id']), $answers, time());
-		if ($vote->match_existing(array("consultation_hash", "members_id"))) {
+		if ($vote->match_existing(array("consultations_hash", "members_id"))) {
 			$vote->load();
 		}
 		$vote->save_with_answers();

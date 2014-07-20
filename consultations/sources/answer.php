@@ -4,7 +4,7 @@
 class Answer extends Record {
 	public $id = 0;
 	public $members_id = 0;
-	public $consultation_hash = "";
+	public $consultations_hash = "";
 	public $choice = "";
 	public $position = 0;
 	public $time = 0;
@@ -41,7 +41,7 @@ class Answer extends Record {
 		$result = $this->db->id("
 			INSERT INTO answers
 			SET members_id = ".(int)$this->members_id.",
-			consultation_hash = ".$this->db->quote($this->consultation_hash).",
+			consultations_hash = ".$this->db->quote($this->consultations_hash).",
 			choice = ".$this->db->quote($this->choice).",
 			position = ".(int)$this->position.",
 			time = ".time()
@@ -56,7 +56,7 @@ class Answer extends Record {
 		$result = $this->db->query("
 			UPDATE answers
 			SET members_id = ".(int)$this->members_id.",
-			consultation_hash = ".$this->db->quote($this->consultation_hash).",
+			consultations_hash = ".$this->db->quote($this->consultations_hash).",
 			choice = ".$this->db->quote($this->choice).",
 			position = ".(int)$this->position.",
 			time = ".time()."
