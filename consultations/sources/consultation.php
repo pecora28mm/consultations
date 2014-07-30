@@ -5,6 +5,9 @@ class Consultation extends Record {
 	public $id = 0;
 	public $name = "";
 	public $description = "";
+	public $comity_id = 0;
+	public $start = 0;
+	public $stop = 0;
 	public $elements = array();
 	public $hash = "";
 	public $time = 0;
@@ -30,6 +33,10 @@ class Consultation extends Record {
 		return Html_Tag::a("admin.php?page=consultation.php&consultations_id=".$this->id, $this->name);
 	}
 
+	function link_to_verifications() {
+		return Html_Tag::a("admin.php?page=verifications.php&consultations_id=".$this->id, __("Verifications"));
+	}
+
 	function link_to_results() {
 		return Html_Tag::a("admin.php?page=results.php&consultations_id=".$this->id, __("Results"));
 	}
@@ -38,16 +45,66 @@ class Consultation extends Record {
 		return Html_Tag::a("admin.php?page=consultation.php&consultations_id=0", __("New consultation"));
 	}
 	
+	function show_trouble_with_numbers() {
+		$html = "<div class=\"consultation-error\">";
+		$html .= __("The number of answers is different from the number of choices times the number of votes: you should not validate the results.");
+		$html .= "</div>";
+		
+		return $html;
+	}
+
+	function show_trouble_with_hashes() {
+		$html = "<div class=\"consultation-error\">";
+		$html .= __("The hashes for this consultation, these votes and these answers are troublesome: you should not validate the results.");
+		$html .= "</div>";
+		
+		return $html;
+	}
+
+	function show_verifications() {
+		$votes = new Votes();
+		$votes->consultations_id = $this->id;
+		$votes->select();
+		
+		$answers = new Answers();
+		$answers->consultations_id = $this->id;
+		$answers->select();
+		
+		$html = "<h3>".__("Number of votes & answers")."</h3>";
+		$html .= __("Choices = %s", array(count($this->elements['choices'])))."<br />";
+		$html .= __("Votes = %s", array(count($votes)))."<br />";
+		$html .= __("Answers = %s", array(count($answers)))."<br />";
+		$html .= __("Choices * Votes = %s", array(count($this->elements['choices']) * count($votes)))."<br />";
+		
+		if (count($answers) != count($this->elements['choices']) * count($votes)) {
+			$html .= $this->show_trouble_with_numbers();
+		}
+		
+		$html .= "<h3>".__("Consultation's hashes")."</h3>";
+		$html .= __("Consultation's hash = %s", array($this->hash))."<br />";
+		$html .= __("Answers' hashes = %s", array(join(", ", $answers->consultations_hashes())))."<br />";
+		$html .= __("Votes' hashes = %s", array(join(", ", $votes->consultations_hashes())))."<br />";
+		
+		$hashes = array_merge(array($this->hash), $answers->consultations_hashes(), $votes->consultations_hashes());
+		$hashes = array_unique($hashes);
+		if (count($hashes) > 1) {
+			$html .= $this->show_trouble_with_hashes();
+		}
+		
+		
+		return $html;
+	}
+
 	function show_results() {
 		$answers = new Answers();
-		$answers->consultations_hash = $this->hash;
+		$answers->consultations_id = $this->id;
 		$answers->select();
 		
 		$html = $answers->show_results();
-		$html .= "<h3>".__("Results with Broda's method")."</h3>";
-		$html .= $answers->show_results_with_broda_method();
 		$html .= "<h3>".__("Results with Condorcet's method")."</h3>";
 		$html .= $answers->show_results_with_condorcet_method();
+		$html .= "<h3>".__("Results with Broda's method")."</h3>";
+		$html .= $answers->show_results_with_broda_method();
 		
 		return $html;
 	}
@@ -57,21 +114,21 @@ class Consultation extends Record {
 			'id' => isset($variables['id']) ? (int)$variables['id'] : 0,
 			'name' => isset($variables['name']) ? $variables['name'] : "",
 			'description' => isset($variables['description']) ? $variables['description'] : "",
+			'comity_id' => isset($variables['comity_id']) ? (int)$variables['comity_id'] : 0,
 			'elements' => array()
 		);
 		
-		$cleaned['elements']['period'] = array();
-		if (isset($variables['elements']['period']['start'])) {
-			$Y = isset($variables['elements']['period']['start']['Y']) ? (int)$variables['elements']['period']['start']['Y'] : 0;
-			$m = isset($variables['elements']['period']['start']['m']) ? (int)$variables['elements']['period']['start']['m'] : 0;
-			$d = isset($variables['elements']['period']['start']['d']) ? (int)$variables['elements']['period']['start']['d'] : 0;
-			$cleaned['elements']['period']['start'] = mktime(0, 0, 0, $m, $d, $Y);
+		if (isset($variables['start'])) {
+			$Y = isset($variables['start']['Y']) ? (int)$variables['start']['Y'] : 0;
+			$m = isset($variables['start']['m']) ? (int)$variables['start']['m'] : 0;
+			$d = isset($variables['start']['d']) ? (int)$variables['start']['d'] : 0;
+			$cleaned['start'] = mktime(0, 0, 0, $m, $d, $Y);
 		}
-		if (isset($variables['elements']['period']['stop'])) {
-			$Y = isset($variables['elements']['period']['stop']['Y']) ? (int)$variables['elements']['period']['stop']['Y'] : 0;
-			$m = isset($variables['elements']['period']['stop']['m']) ? (int)$variables['elements']['period']['stop']['m'] : 0;
-			$d = isset($variables['elements']['period']['stop']['d']) ? (int)$variables['elements']['period']['stop']['d'] : 0;
-			$cleaned['elements']['period']['stop'] = mktime(0, 0, 0, $m, $d, $Y);
+		if (isset($variables['stop'])) {
+			$Y = isset($variables['stop']['Y']) ? (int)$variables['stop']['Y'] : 0;
+			$m = isset($variables['stop']['m']) ? (int)$variables['stop']['m'] : 0;
+			$d = isset($variables['stop']['d']) ? (int)$variables['stop']['d'] : 0;
+			$cleaned['stop'] = mktime(0, 0, 0, $m, $d, $Y);
 		}
 		
 		$cleaned['elements']['preambules'] = array();
@@ -122,19 +179,24 @@ class Consultation extends Record {
 		$id = new Html_Input("consultation[id]", $this->id);
 		$html .= $id->input_hidden();
 		
+		$comities = new Comities(new Db($GLOBALS['bigficheconfig']));
+		$comities->select();
+
 		$html .= "<fieldset>";
 		$html .= "<legend>".__("Presentation")."</legend>";
 		$name = new Html_Input("consultation[name]", $this->name);
 		$html .= $name->paragraph(__("Name"));
 		$description = new Html_Textarea("consultation[description]", $this->description);
 		$html .= $description->paragraph(__("Description"));
+		$comity_id = new Html_Select("consultation[comity_id]", array('--' => "--") + $comities->names(), $this->comity_id);
+		$html .= $comity_id->paragraph(__("Comity"));
 		$html .= "</fieldset>";
 		
 		$html .= "<fieldset>";
 		$html .= "<legend>".__("Period")."</legend>";
-		$start = new Html_Input_Date("consultation[elements][period][start]", isset($this->elements['period']['start']) ? $this->elements['period']['start'] : "");
+		$start = new Html_Input_Date("consultation[start]", $this->start > 0 ? $this->start : "");
 		$html .= $start->paragraph(__("Start"));
-		$stop = new Html_Input_Date("consultation[elements][period][stop]", isset($this->elements['period']['stop']) ? $this->elements['period']['stop'] : "");
+		$stop = new Html_Input_Date("consultation[stop]", $this->stop > 0 ? $this->stop : "");
 		$html .= $stop->paragraph(__("Stop"));
 		$html .= "</fieldset>";
 		
@@ -262,7 +324,7 @@ class Consultation extends Record {
 	}
 	
 	function is_started() {
-		if (isset($this->elements['period']['start']) and $this->elements['period']['start'] < time()) {
+		if (isset($this->start) and $this->start < time()) {
 			return true;
 		} else {
 			return false;
@@ -270,11 +332,11 @@ class Consultation extends Record {
 	}
 	
 	function is_open() {
-		if (!isset($this->elements['period']['start']) or !isset($this->elements['period']['stop'])) {
+		if (!isset($this->start) or !isset($this->stop)) {
 			return false;
 		}
 
-		if ($this->elements['period']['start'] <= time() and time() <= $this->elements['period']['stop']) {
+		if ($this->start <= time() and time() <= $this->stop) {
 			return true;
 		} else {
 			return false;
@@ -437,7 +499,7 @@ class Consultation extends Record {
 	function show_thankyou() {
 		$html = "<div class=\"consultation-information\">";
 		$html .= "<p>".__("Thank you for voting.")."</p>";
-		$html .= "<p>".__("This consultation will be closed definitely on %s.", array(date("d/m/Y H:i", $this->elements['period']['stop'])))."</p>";
+		$html .= "<p>".__("This consultation will be closed definitely on %s.", array(date("d/m/Y H:i", $this->stop)))."</p>";
 		$html .= "</div>";
 		
 		return $html;
@@ -485,7 +547,7 @@ class Consultation extends Record {
 	
 	function show_problem_with_save() {
 		$html = "<div class=\"consultation-error\">";
-		$html .= __("Your answers were not saved. Please contact the technical team : tech@nouvelledonne.fr.");
+		$html .= __("Your answers were not saved. Please contact the technical team : %s.", array($GLOBALS['param']['preparation_email']));
 		$html .= "</div>";
 		
 		return $html;
@@ -513,6 +575,9 @@ class Consultation extends Record {
 			INSERT INTO consultations
 			SET name = ".$this->db->quote($this->name).",
 			description = ".$this->db->quote($this->description).",
+			comity_id = ".(int)$this->comity_id.",
+			start = ".(int)$this->start.",
+			stop = ".(int)$this->stop.",
 			elements = ".$this->db->quote(json_encode($this->elements)).",
 			hash = ".$this->db->quote($this->hash()).",
 			time = ".time()
@@ -528,6 +593,9 @@ class Consultation extends Record {
 			UPDATE consultations
 			SET name = ".$this->db->quote($this->name).",
 			description = ".$this->db->quote($this->description).",
+			comity_id = ".(int)$this->comity_id.",
+			start = ".(int)$this->start.",
+			stop = ".(int)$this->stop.",
 			elements = ".$this->db->quote(json_encode($this->elements)).",
 			hash = ".$this->db->quote($this->hash()).",
 			time = ".time()."

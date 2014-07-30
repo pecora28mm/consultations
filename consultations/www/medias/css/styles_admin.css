@@ -1,2 +1,4 @@
 .navbar-default { background-color: #777; border-color: #e7e7e7; }
 .navbar-default .navbar-brand { color: #f8f8f8; }
+
+.container-max { padding-bottom: 5em; }

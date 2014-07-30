@@ -14,3 +14,5 @@ $dbconfig['pass'] = "";
 $dbconfig['new'] = "0";
 
 $param['locale_timezone'] = "Europe/Paris";
+$param['preparation_secret'] = "l0!lkhjdàçZE45$*62bZ";
+$param['preparation_email'] = "perrick@noparking.net";

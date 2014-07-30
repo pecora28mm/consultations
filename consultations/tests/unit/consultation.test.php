@@ -13,26 +13,48 @@ class tests_Consultation extends TableTestCase {
 		);
 	}
 	
+	function test_save() {
+		$consultation = new Consultation();
+		$consultation->name = "Première consultation";
+		$consultation->description = "Première description";
+		$consultation->comity_id = 12;
+		$consultation->start = 123;
+		$consultation->stop = 1234;
+		$this->assertTrue($consultation->save());
+		
+		$consultation->comity_id = 13;
+		$this->assertTrue($consultation->save());
+		
+		$consultation_loaded = new Consultation();
+		$consultation_loaded->load($consultation->id);
+		$this->assertEqual($consultation_loaded->id, $consultation->id);
+		$this->assertEqual($consultation_loaded->name, $consultation->name);
+		$this->assertEqual($consultation_loaded->description, $consultation->description);
+		$this->assertEqual($consultation_loaded->comity_id, $consultation->comity_id);
+		$this->assertEqual($consultation_loaded->start, $consultation->start);
+		$this->assertEqual($consultation_loaded->stop, $consultation->stop);
+		
+		$this->truncateTables("consultations");
+	}
+
 	function test_clean() {
 		$post = array (
 			'consultation' => array(
 				'id' => "42-test",
 				'name' => "42ème test",
 				'description' => "Desc. du 42ème test",
+				'comity_id' => "42",
+				'start' =>  array (
+				  'd' => '',
+				  'm' => '',
+				  'Y' => '',
+				),
+				'stop' => array (
+				  'd' => '',
+				  'm' => '',
+				  'Y' => '',
+				),
 				'elements' => array (
-				    'name' => '',
-				    'period' => array (
-				      'start' =>  array (
-				        'd' => '',
-				        'm' => '',
-				        'Y' => '',
-				      ),
-				      'stop' => array (
-				        'd' => '',
-				        'm' => '',
-				        'Y' => '',
-				      ),
-				    ),
 				    'preambules' => array (
 				      1 => array (
 				        'url' => '',
@@ -85,11 +107,10 @@ class tests_Consultation extends TableTestCase {
 			'id' => "42",
 			'name' => "42ème test",
 			'description' => "Desc. du 42ème test",
+			'comity_id' => "42",
+			'start' => mktime(0, 0, 0, 0, 0, 0),
+			'stop' => mktime(0, 0, 0, 0, 0, 0),
 			'elements' => array (
-			    'period' => array (
-					'start' => mktime(0, 0, 0, 0, 0, 0),
-					'stop' => mktime(0, 0, 0, 0, 0, 0),
-			    ),
 			    'preambules' => array(), 
 			    'opinions' => array(),
 			    'question' => '',

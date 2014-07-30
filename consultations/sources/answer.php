@@ -4,6 +4,7 @@
 class Answer extends Record {
 	public $id = 0;
 	public $members_id = 0;
+	public $consultations_id = 0;
 	public $consultations_hash = "";
 	public $choice = "";
 	public $position = 0;
@@ -41,6 +42,7 @@ class Answer extends Record {
 		$result = $this->db->id("
 			INSERT INTO answers
 			SET members_id = ".(int)$this->members_id.",
+			consultations_id = ".(int)$this->consultations_id.",
 			consultations_hash = ".$this->db->quote($this->consultations_hash).",
 			choice = ".$this->db->quote($this->choice).",
 			position = ".(int)$this->position.",
@@ -56,6 +58,7 @@ class Answer extends Record {
 		$result = $this->db->query("
 			UPDATE answers
 			SET members_id = ".(int)$this->members_id.",
+			consultations_id = ".(int)$this->consultations_id.",
 			consultations_hash = ".$this->db->quote($this->consultations_hash).",
 			choice = ".$this->db->quote($this->choice).",
 			position = ".(int)$this->position.",

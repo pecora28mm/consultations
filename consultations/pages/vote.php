@@ -10,7 +10,7 @@ if (isset($_POST['consultation'])) {
 	if ($consultation->are_answers_coherent($answers)) {
 		$vote = new Vote();
 		$vote->charge($consultation, new Member($_SESSION['consultation']['members_id']), $answers, time());
-		if ($vote->match_existing(array("consultations_hash", "members_id"))) {
+		if ($vote->match_existing(array("consultations_id", "members_id"))) {
 			$vote->load();
 		}
 		$vote->save_with_answers();

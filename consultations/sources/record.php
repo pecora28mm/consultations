@@ -93,13 +93,13 @@ abstract class Record {
 		if ($columns === null) {
 			$columns = $this->get_db_columns();
 		}
-		
+
 		$result = $this->db->query("
 			SELECT ".join(", ", $columns)."
 			FROM ".$table."
 			WHERE id = ".(int)$id
 		);
-
+		
 		$row = $this->db->fetchArray($result[0]);
 
 		if ($row === false) {
@@ -108,7 +108,7 @@ abstract class Record {
 			foreach ($row as $column => $value) {
 				$this->{$this->db_column_to_php_property($column)} = $value;
 			}
-
+				
 			return true;
 		}
 	}

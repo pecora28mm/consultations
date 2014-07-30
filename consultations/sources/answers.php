@@ -6,6 +6,14 @@ class Answers extends Collector {
 		parent::__construct("Answer", "answers", $db);
 	}
 	
+	function consultations_hashes() {
+		$consultations_hashes = array();
+		foreach ($this as $vote) {
+			$consultations_hashes[] = $vote->consultations_hash;
+		}
+		return array_unique($consultations_hashes);
+	}
+
 	function show_rankings($results) {
 		$html = "<ol>";
 		$i = 0;
@@ -106,6 +114,9 @@ class Answers extends Collector {
 		
 		if (isset($this->members_id)) {
 			$where[] = "answers.members_id = ".(int)$this->members_id;
+		}
+		if (isset($this->consultations_id)) {
+			$where[] = "answers.consultations_id = ".$this->db->quote($this->consultations_id);
 		}
 		if (isset($this->consultations_hash)) {
 			$where[] = "answers.consultations_hash = ".$this->db->quote($this->consultations_hash);

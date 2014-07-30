@@ -9,6 +9,9 @@
 .consultation-submit { font-size: 1.5em; margin-top: 2em; }
 .consultation-answers { font-size: 1.3em; width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; border: 1px solid grey; }
 
+.preparation-message { width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; color: #fff; background-color: #39b3d7; }
+.preparation-error { width: 100%; margin: 1em 0; padding: 6px 12px; border-radius: 4px; color: #fff; background-color: #d9534f; }
+
 div.container-max { font-size: 1.3em; }
 div.container-max input { width: 100%; }
 div.container-max input.input-date { width: 50px; }
