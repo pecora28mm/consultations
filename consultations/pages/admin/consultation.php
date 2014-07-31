@@ -17,3 +17,4 @@ $consultation->load($consultation_id);
 
 echo "<h2>".__("Edit the consultation '%s'", array($consultation->name))."</h2>";
 echo $consultation->edit();
+echo $consultation->help_sending_convocations();

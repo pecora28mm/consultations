@@ -42,9 +42,9 @@ class tests_Preparation extends TableTestCase {
 		$this->assertEqual("MXwxfGE5MDMzMDhjODZlZDczY2I4MDUyY2E3YTA2MTNhNDE0", $preparation->encode_member_consultation(new Member(1), new Consultation(1)));
 	}
 	
-	function test_charge_open_consultations_with_email() {
+	function test_charge_open_consultations_for_member() {
 		$preparation = new Preparation();
-		$this->assertFalse($preparation->charge_open_consultations_with_email("perrick@noparking.net"));
+		$this->assertFalse($preparation->charge_open_consultations_for_member());
 		
 		$consultation = new Consultation();
 		$consultation->name = "Première consultation";
@@ -54,21 +54,21 @@ class tests_Preparation extends TableTestCase {
 		$consultation->comity_id = 1;
 		$consultation->save();
 		
-		$this->assertFalse($preparation->charge_open_consultations_with_email("perrick@noparking.net"));
+		$this->assertFalse($preparation->charge_open_consultations_for_member());
 
 		$member = new Member();
 		$member->nom = "Penet";
 		$member->email = "perrick@noparking.net";
 		$member->save();
 
-		$this->assertFalse($preparation->charge_open_consultations_with_email("perrick@noparking.net"));
+		$this->assertFalse($preparation->charge_open_consultations_for_member($member));
 
 		$member_comity = new Member_Comity();
 		$member_comity->member_id = $member->id;
 		$member_comity->comity_id = 1;
 		$member_comity->save();
 		
-		$this->assertTrue($preparation->charge_open_consultations_with_email("perrick@noparking.net"));
+		$this->assertTrue($preparation->charge_open_consultations_for_member($member));
 		$this->assertEqual(count($preparation->consultations), 1);
 		
 		$consultation = new Consultation();
@@ -79,7 +79,7 @@ class tests_Preparation extends TableTestCase {
 		$consultation->comity_id = 1;
 		$consultation->save();
 		
-		$this->assertTrue($preparation->charge_open_consultations_with_email("perrick@noparking.net"));
+		$this->assertTrue($preparation->charge_open_consultations_for_member($member));
 		$this->assertEqual(count($preparation->consultations), 1);
 		
 		$this->truncateTables("consultations");

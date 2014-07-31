@@ -35,6 +35,13 @@ class Consultations extends Collector {
 	function get_where() {
 		$where = parent::get_where();
 		
+		if (isset($this->comity_id)) {
+			if (is_array($this->comity_id)) {
+				$where[] = "consultations.comity_id IN (".join(", ", $this->comity_id).")";
+			} else {
+				$where[] = "consultations.comity_id = ".(int)$this->comity_id;
+			}
+		}
 		if (isset($this->day)) {
 			$where[] = "consultations.start <= ".(int)$this->day;
 			$where[] = "consultations.stop >= ".(int)$this->day;

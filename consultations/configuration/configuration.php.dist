@@ -1,9 +1,10 @@
 <?php
 /* Nouvelle Donne -- Copyright (C) Perrick Penet-Avez 2014 - 2014 */
 
-$config['name'] = "Lozeil";
-$config['title'] = "Lozeil";
-$config['version'] = "26";
+$config['name'] = "Consultations Nouvelle Donne";
+$config['title'] = "consultations";
+$config['version'] = "1";
+$config['url'] = "http://localhost/~perrick/nouvelledonne-consultations/consultations/www/";
 $config['layout_mediaserver'] = "";
 
 $dbconfig['type'] = "mysql";
@@ -11,8 +12,15 @@ $dbconfig['host'] = "localhost";
 $dbconfig['name'] = "nouvelledonne";
 $dbconfig['user'] = "root";
 $dbconfig['pass'] = "";
-$dbconfig['new'] = "0";
+$dbconfig['new'] = "1";
+
+$bigficheconfig['type'] = "mysql";
+$bigficheconfig['host'] = "localhost";
+$bigficheconfig['name'] = "bigfiche_nd";
+$bigficheconfig['user'] = "root";
+$bigficheconfig['pass'] = "";
+$bigficheconfig['new'] = "1";
 
 $param['locale_timezone'] = "Europe/Paris";
-$param['preparation_secret'] = "l0!lkhjdàçZE45$*62bZ";
+$param['preparation_secret'] = "xxx";
 $param['preparation_email'] = "perrick@noparking.net";

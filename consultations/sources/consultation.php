@@ -173,6 +173,9 @@ class Consultation extends Record {
 		if ($this->is_started()) {
 			$html .= $this->show_started_sign();
 		}
+		if ($this->is_open()) {
+			$html .= $this->show_already_opened_sign();
+		}
 		
 		$html .= "<form method=\"post\" action=\"\">";
 		
@@ -324,7 +327,10 @@ class Consultation extends Record {
 	}
 	
 	function is_started() {
-		if (isset($this->start) and $this->start < time()) {
+		$votes = new Votes();
+		$votes->consultation_id = $this->id;
+		$votes->select();
+		if (count($votes) > 0) {
 			return true;
 		} else {
 			return false;
@@ -529,8 +535,24 @@ class Consultation extends Record {
 		}
 	}
 	
+	function help_sending_convocations() {
+		$html = "<div class=\"consultation-message\">";
+		$html .= __("In order to send all the convocations in one batch, you'll need to execute this command: 'php bot.php --send_convocations consultation=%s'.", array($this->id));
+		$html .= "</div>";
+		
+		return $html;
+	}
+	
+	function show_already_opened_sign() {
+		$html = "<div class=\"consultation-message\">";
+		$html .= __("This consultation is already open.");
+		$html .= "</div>";
+		
+		return $html;
+	}
+
 	function show_started_sign() {
-		$html = "<div class=\"consultation-started\">";
+		$html = "<div class=\"consultation-error\">";
 		$html .= __("This consultation has already started.");
 		$html .= "</div>";
 		

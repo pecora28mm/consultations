@@ -17,15 +17,11 @@ class Answers extends Collector {
 	function show_rankings($results) {
 		$html = "<ol>";
 		$i = 0;
-		$points_last = -1;
 		foreach ($results as $tag => $points) {
-			if ($points != $points_last) {
+			if (!isset($points_last) or $points != $points_last) {
 				$i++;
 			}
 			$html .= "<li>".__("Position %s: %s with %s points", array($i, $tag, $points))."</li>";
-			if ($points == $points_last) {
-				$i++;
-			}
 			$points_last = $points;
 		}
 		$html .= "</ol>";
@@ -34,6 +30,10 @@ class Answers extends Collector {
 	}
 	
 	function show_results_with_condorcet_method() {
+		$partials = array();
+		$duels = array();
+		$results = array();
+
 		foreach ($this as $answer) {
 			$partials[$answer->members_id][$answer->position] = $answer->choice;
 		}
@@ -69,6 +69,8 @@ class Answers extends Collector {
 	}
 
 	function show_results_with_broda_method() {
+		$results = array();
+
 		foreach ($this as $answer) {
 			if (!isset($results[$answer->choice])) {
 				$results[$answer->choice] = 0;
@@ -82,6 +84,8 @@ class Answers extends Collector {
 	}
 
 	function show_results() {
+		$results = array();
+
 		foreach ($this as $answer) {
 			if (!isset($results[$answer->position][$answer->choice])) {
 				$results[$answer->position][$answer->choice] = 0;

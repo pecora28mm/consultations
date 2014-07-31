@@ -40,27 +40,60 @@ class Preparation {
 	}
 	
 	function url_to_convocation($member, $consultation) {
-		return $GLOBALS['config']['url']."?key=".$this->encode_member_consultation($this->member, $consultation);
+		return $GLOBALS['config']['url']."?key=".$this->encode_member_consultation($member, $consultation);
 	}
 
-	function send_convocations() {
-		require __DIR__."/../libraries/phpmailer/class.phpmailer.php";
-
+	function send_convocations_for_member($member = null) {
+		if ($member !== null and $member instanceof Member) {
+			$this->member = $member;
+		}
+		if (!($this->member instanceof Member)) {
+			return false;
+		}
+		
 		$result = true;
 		foreach ($this->consultations as $consultation) {
-			$mail = new PHPMailer();
-			$mail->AddAddress($this->member->email, $this->member->prenom." ".$this->member->nom);
-			$mail->From = $GLOBALS['param']['preparation_email'];
-			$mail->FromName = __("Consultations' tool");
-			$mail->Subject = __("Consultation's convocation: %s", array($consultation->elements['question']));
-			$mail->Body = __("Hello %s,", array($this->member->prenom))."\n\n";
-			$mail->Body .= __("Please use the link below to vote about \"%s\"?", array($consultation->elements['question']))."\n\n";
-			$mail->Body .= $this->url_to_convocation($this->member, $consultation)."\n\n";
-			$mail->Body .= __("The consultations team")."\n\n";
-
-			$result = $result and $mail->Send();
+			$result = (bool)($result and $this->send_convocation($this->member, $consultation));
 		}
 		return $result;
+	}
+	
+	function send_convocations_for_consultation($consultation = null) {
+		if ($consultation !== null and $consultation instanceof Consultation) {
+			$this->consultation = $consultation;
+		}
+		if (!($this->consultation instanceof Consultation)) {
+			return false;
+		}
+		
+		$bigfichedb = new Db($GLOBALS['bigficheconfig']);
+		
+		$members = new Members($bigfichedb);
+		$members->comity_id = (int)$this->consultation->comity_id;
+		$members->select();
+		
+		$result = true;
+		foreach ($members as $member) {
+			$result = (bool)($result and $this->send_convocation($member, $this->consultation));
+		}
+		return $result;
+	}
+	
+	function send_convocation($member, $consultation) {
+		require_once __DIR__."/../libraries/phpmailer/class.phpmailer.php";
+		
+		$mail = new PHPMailer();
+		$mail->AddAddress($member->email, $member->prenom." ".$member->nom);
+		$mail->From = $GLOBALS['param']['preparation_email'];
+		$mail->FromName = __("Consultations' tool");
+		$mail->Subject = __("Consultation's convocation: %s", array($consultation->elements['question']));
+		$mail->Body = __("Hello %s,", array($member->prenom))."\n\n";
+		$mail->Body .= __("Please use the link below to vote about \"%s\"?", array($consultation->elements['question']))."\n\n";
+		$mail->Body .= $this->url_to_convocation($member, $consultation)."\n\n";
+		$mail->Body .= __("The consultations team")."\n\n";
+debug::dump($member->email, $mail->Subject, $mail->Body);
+
+		return $mail->Send();
 	}
 	
 	function is_key_coherent($key) {
@@ -175,14 +208,19 @@ class Preparation {
 		}
 	}
 	
-	function charge_open_consultations_with_email($email = null, Db $db = null) {
-		if (!isset($this->member) or $this->member->id == 0) {
-			$this->charge_member_with_email($email, $db);
+	function charge_open_consultations_for_member($member = null, Db $db = null) {
+		if ($member !== null and $member instanceof Member) {
+			$this->member = $member;
 		}
+		if (!($this->member instanceof Member)) {
+			return false;
+		}
+		
 		$comity_ids = $this->member->comity_ids();
 
 		$this->consultations = new Consultations();
 		if (count($comity_ids) > 0) {
+			$this->consultations->comity_id = $comity_ids;
 			$this->consultations->day = time();
 			$this->consultations->select();
 			return true;

@@ -7,9 +7,9 @@ if (isset($_POST['preparation']['email'])) {
 	$bigfichedb = new Db($GLOBALS['bigficheconfig']);
 	
 	if ($preparation->charge_member_with_email($_POST['preparation']['email'], $bigfichedb)) {
-		$preparation->charge_open_consultations_with_email();
+		$preparation->charge_open_consultations_for_member();
 		if ($preparation->is_ready()) {
-			if ($preparation->send_convocations()) {
+			if ($preparation->send_convocations_for_member()) {
 				echo $preparation->show_convocations_sent();
 			} else {
 				echo $preparation->show_error_while_sending_convocations();
