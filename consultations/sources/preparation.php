@@ -10,6 +10,13 @@ class Preparation {
 		$this->consultations = new Consultations();
 	}
 	
+	function show_link_asking_for_email() {
+		$html = "<div class=\"consultation-message-light\">";
+		$html .= $this->link_asking_for_email();
+		$html .= "</div>";
+		return $html;
+	}
+
 	function link_asking_for_email() {
 		return Html_Tag::a($this->url_to_asking_for_email(), __("Verify your current convocations"));
 		
@@ -19,8 +26,8 @@ class Preparation {
 		return $GLOBALS['config']['url']."index.php?page=preparation.php";
 	}
 	
-	function url_to_consultation() {
-		return $GLOBALS['config']['url']."index.php?page=consultation.php";
+	function url_to_procedure() {
+		return $GLOBALS['config']['url']."index.php?page=procedure.php";
 	}
 	
 	function consultation_id() {

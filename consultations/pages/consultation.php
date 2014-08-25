@@ -1,21 +1,40 @@
 <?php
 /* Nouvelle Donne -- Copyright (C) Perrick Penet-Avez 2014 - 2014 */
 
-$consultation = new Consultation();
-$consultation->load($_SESSION['consultation']['consultations_id']);
-if ($consultation->is_open()) {
-	echo $consultation->show_opened_sign();
-	
-	$vote = new Vote();
-	$vote->charge($consultation, new Member($_SESSION['consultation']['members_id']));
-	if ($vote->match_existing(array("members_id", "consultations_hash"))) {
-		$vote->load();
-	}
-	if ($vote->is_done()) {
-		echo $vote->show_summary();
-	}
+$token = isset($_GET['token']) ? $_GET['token'] : "";
 
-	echo $consultation->show_procedure();
+$consultation = new Consultation();
+$consultation->token = $token;
+if (!empty($token) and $consultation->match_existing(array("token"))) {
+	$consultation->load();
+}
+$consultation_id = $consultation->id;
+
+if (isset($_POST['consultation'])) {
+	$consultation = new Consultation();
+	$cleaned = $consultation->clean($_POST['consultation']);
+	$consultation->load($cleaned['id']);
+	$consultation->fill($cleaned);
+	$consultation->save();
+	$consultation_id = $consultation->id; 
+}
+
+$consultation = new Consultation();
+$consultation->load($consultation_id);
+
+
+if ($consultation->is_open() or $consultation->is_closed()) {
+	echo "<h2>".__("Show the consultation '%s'", array($consultation->name))."</h2>";
+	echo $consultation->show();
 } else {
-	echo $consultation->show_closed_sign();
+	if ($consultation->id > 0) {
+		echo "<h2>".__("Edit the consultation '%s'", array($consultation->name))."</h2>";
+	} else {
+		echo "<h2>".__("Create a new consultation")."</h2>";
+	}
+	echo $consultation->edit();
+}
+if ($consultation->id > 0) {
+	echo $consultation->help_sending_convocations();
+	echo $consultation->show_link_to_public_results();
 }

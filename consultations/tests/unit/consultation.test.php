@@ -17,7 +17,9 @@ class tests_Consultation extends TableTestCase {
 		$consultation = new Consultation();
 		$consultation->name = "Première consultation";
 		$consultation->description = "Première description";
+		$consultation->email = "perrick@noparking.net";
 		$consultation->comity_id = 12;
+		$consultation->emails = "perrick@noparking.net";
 		$consultation->start = 123;
 		$consultation->stop = 1234;
 		$this->assertTrue($consultation->save());
@@ -31,10 +33,31 @@ class tests_Consultation extends TableTestCase {
 		$this->assertEqual($consultation_loaded->name, $consultation->name);
 		$this->assertEqual($consultation_loaded->description, $consultation->description);
 		$this->assertEqual($consultation_loaded->comity_id, $consultation->comity_id);
+		$this->assertEqual($consultation_loaded->email, $consultation->email);
+		$this->assertEqual($consultation_loaded->emails, $consultation->emails);
 		$this->assertEqual($consultation_loaded->start, $consultation->start);
 		$this->assertEqual($consultation_loaded->stop, $consultation->stop);
 		
 		$this->truncateTables("consultations");
+	}
+	
+	function test_clean_emails() {
+		$consultation = new Consultation();
+		
+		$emails = "perrick@example.com,  thomas@example.fr";
+		$this->assertEqual($consultation->clean_emails($emails), "perrick@example.com thomas@example.fr");
+
+		$emails = "perrick@example.com;  thomas@example.fr";
+		$this->assertEqual($consultation->clean_emails($emails), "perrick@example.com thomas@example.fr");
+
+		$emails = "perrick@example.com\nthomas@example.fr";
+		$this->assertEqual($consultation->clean_emails($emails), "perrick@example.com thomas@example.fr");
+
+		$emails = "perrick@example.com \t thomas@example.fr";
+		$this->assertEqual($consultation->clean_emails($emails), "perrick@example.com thomas@example.fr");
+
+		$emails = "perrick@example.com \r thomas@example.fr";
+		$this->assertEqual($consultation->clean_emails($emails), "perrick@example.com thomas@example.fr");
 	}
 
 	function test_clean() {
@@ -43,7 +66,9 @@ class tests_Consultation extends TableTestCase {
 				'id' => "42-test",
 				'name' => "42ème test",
 				'description' => "Desc. du 42ème test",
+				'email' => "perrick@example.org",
 				'comity_id' => "42",
+				'emails' => "perrick@example.org",
 				'start' =>  array (
 				  'd' => '',
 				  'm' => '',
@@ -107,7 +132,9 @@ class tests_Consultation extends TableTestCase {
 			'id' => "42",
 			'name' => "42ème test",
 			'description' => "Desc. du 42ème test",
+			'email' => "perrick@example.org",
 			'comity_id' => "42",
+			'emails' => "",
 			'start' => mktime(0, 0, 0, 0, 0, 0),
 			'stop' => mktime(0, 0, 0, 0, 0, 0),
 			'elements' => array (

@@ -3,9 +3,12 @@
 
 class Consultation extends Record {
 	public $id = 0;
+	public $token = "";
 	public $name = "";
 	public $description = "";
+	public $email = "";
 	public $comity_id = 0;
+	public $emails = "";
 	public $start = 0;
 	public $stop = 0;
 	public $elements = array();
@@ -15,6 +18,7 @@ class Consultation extends Record {
 	function __construct($id = 0, db $db = null) {
 		parent::__construct($db);
 		$this->id = $id;
+		$this->token = md5(uniqid("", true));
 	}
 	
 	function match_existing($patterns = array("name"), $table = "consultations", $db = null) {
@@ -43,6 +47,25 @@ class Consultation extends Record {
 
 	function link_to_new() {
 		return Html_Tag::a("admin.php?page=consultation.php&consultations_id=0", __("New consultation"));
+	}
+	
+	function show_link_to_public_new() {
+		$html = "<div class=\"consultation-message-light\">";
+		$html .= $this->link_to_public_new();
+		$html .= "</div>";
+		return $html;
+	}
+	
+	function link_to_public_new() {
+		return Html_Tag::a("index.php?page=consultation.php&token=new", __("Create a new consultation"));
+	}
+	
+	function link_to_public() {
+		return Html_Tag::a("index.php?page=consultation.php&token=".$this->token, __("Edit this consultation"));
+	}
+	
+	function link_to_public_results() {
+		return Html_Tag::a("index.php?page=results.php&token=".$this->token, __("Consult this consultation's results"));
 	}
 	
 	function show_trouble_with_numbers() {
@@ -96,16 +119,19 @@ class Consultation extends Record {
 	}
 
 	function show_results() {
-		$answers = new Answers();
-		$answers->consultations_id = $this->id;
-		$answers->select();
-		
-		$html = $answers->show_results();
-		$html .= "<h3>".__("Results with Condorcet's method")."</h3>";
-		$html .= $answers->show_results_with_condorcet_method();
-		$html .= "<h3>".__("Results with Broda's method")."</h3>";
-		$html .= $answers->show_results_with_broda_method();
-		
+		$html = "";
+
+		if ($this->id > 0) {
+			$answers = new Answers();
+			$answers->consultations_id = $this->id;
+			$answers->select();
+			
+			$html = $answers->show_results();
+			$html .= "<h3>".__("Results with Condorcet's method")."</h3>";
+			$html .= $answers->show_results_with_condorcet_method();
+			$html .= "<h3>".__("Results with Broda's method")."</h3>";
+			$html .= $answers->show_results_with_broda_method();
+		}		
 		return $html;
 	}
 	
@@ -114,7 +140,9 @@ class Consultation extends Record {
 			'id' => isset($variables['id']) ? (int)$variables['id'] : 0,
 			'name' => isset($variables['name']) ? $variables['name'] : "",
 			'description' => isset($variables['description']) ? $variables['description'] : "",
+			'email' => (isset($variables['email']) and is_email($variables['email'])) ? $variables['email'] : "",				
 			'comity_id' => isset($variables['comity_id']) ? (int)$variables['comity_id'] : 0,
+			'emails' => isset($variables['emails']) ? $variables['emails'] : "",
 			'elements' => array()
 		);
 		
@@ -163,9 +191,94 @@ class Consultation extends Record {
 				}
 			}
 		}
+
+		if ($cleaned['comity_id'] > 0) {
+			$cleaned['emails'] = "";
+		} else {
+			$cleaned['emails'] = $this->clean_emails($cleaned['emails']);
+		}
 		
 		return $cleaned;
-	} 
+	}
+	
+	function clean_emails($emails) {
+		$emails = str_replace(",", " ", $emails);
+		$emails = str_replace(";", " ", $emails);
+		$emails = str_replace("\r", " ", $emails);
+		$emails = str_replace("\n", " ", $emails);
+		$emails = str_replace("\t", " ", $emails);
+		$elements = explode(" ", $emails);
+		$emails = "";
+		foreach ($elements as $element) {
+			if (is_email($element)) {
+				$emails .= " ".$element;
+			}
+		}
+
+		return trim($emails);
+	}
+	
+	function show() {
+		$html = "";
+		
+		if ($this->is_open()) {
+			$html .= $this->show_already_opened_sign();
+		} elseif ($this->is_closed()) {
+			$html .= $this->show_already_closed_sign();
+		}
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Presentation")."</legend>";
+		$html .= "<dl>";
+		$html .= "<dt>".__("Name")."</dt><dd>".$this->name."</dd>";
+		$html .= "<dt>".__("Description")."</dt><dd>".$this->description."</dd>";
+		$html .= "</dl>";
+		$html .= "</fieldset>";
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Voters")."</legend>";
+		$html .= "<dl>";
+		$html .= "<dt>".__("Comity")."</dt><dd>".$this->comity_id."</dd>";
+		$html .= "<dt>".__("Emails")."</dt><dd>".$this->emails."</dd>";
+		$html .= "</dl>";
+		$html .= "</fieldset>";
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Period")."</legend>";
+		$html .= "<dl>";
+		$html .= "<dt>".__("Start")."</dt><dd>".date("d/m/Y", $this->start)."</dd>";
+		$html .= "<dt>".__("Stop")."</dt><dd>".date("d/m/Y", $this->stop)."</dd>";
+		$html .= "</dl>";
+		$html .= "</fieldset>";
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Preambule : list of facts")."</legend>";
+		$this->show_preambule();
+		$html .= "</fieldset>";
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Opinions : list of views")."</legend>";
+		$this->show_opinions();
+		$html .= "</fieldset>";
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Question")."</legend>";
+		$html .= "<dl>";
+		$html .= "<dt>".__("Question")."</dt><dd>".(isset($this->elements['question']) ? $this->elements['question'] : "")."</dd>";
+		$html .= "</dl>";
+		$html .= "</fieldset>";
+		
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Choices")."</legend>";
+		if (isset($this->elements['choices']) and is_array($this->elements['choices'])) {
+			foreach ($this->elements['choices'] as $choice) {
+				$html .= "<dt>".$choice['tag']."</dt><dd>".$choice['description']."</dd>";
+			}
+		}
+		$html .= "</fieldset>";
+		
+		return $html;
+	}
 	
 	function edit() {
 		$html = "";
@@ -191,8 +304,16 @@ class Consultation extends Record {
 		$html .= $name->paragraph(__("Name"));
 		$description = new Html_Textarea("consultation[description]", $this->description);
 		$html .= $description->paragraph(__("Description"));
+		$email = new Html_Input("consultation[email]", $this->email);
+		$html .= $email->paragraph(__("Email"));
+		$html .= "</fieldset>";
+
+		$html .= "<fieldset>";
+		$html .= "<legend>".__("Voters")."</legend>";
 		$comity_id = new Html_Select("consultation[comity_id]", array('--' => "--") + $comities->names(), $this->comity_id);
 		$html .= $comity_id->paragraph(__("Comity"));
+		$emails = new Html_Textarea("consultation[emails]", $this->emails);
+		$html .= $emails->paragraph(__("Emails"));
 		$html .= "</fieldset>";
 		
 		$html .= "<fieldset>";
@@ -327,10 +448,23 @@ class Consultation extends Record {
 	}
 	
 	function is_started() {
-		$votes = new Votes();
-		$votes->consultation_id = $this->id;
-		$votes->select();
-		if (count($votes) > 0) {
+		if ($this->id > 0) {
+			$votes = new Votes();
+			$votes->consultations_id = $this->id;
+			$votes->select();
+			if (count($votes) > 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	function is_closed() {
+		if (!isset($this->start) or !isset($this->stop)) {
+			return false;
+		}
+		
+		if ($this->stop > 0 and $this->stop < time()) {
 			return true;
 		} else {
 			return false;
@@ -535,19 +669,45 @@ class Consultation extends Record {
 		}
 	}
 	
+	function show_link_to_public() {
+		$html = "<div class=\"consultation-message-light\">";
+		$html .= $this->link_to_public();
+		$html .= "</div>";
+		return $html;
+	}
+	
+	function show_link_to_public_results() {
+		$html = "<div class=\"consultation-message-light\">";
+		$html .= $this->link_to_public_results();
+		$html .= "</div>";
+		return $html;
+	}
+	
 	function help_sending_convocations() {
 		$html = "<div class=\"consultation-message\">";
 		$html .= __("In order to send all the convocations in one batch, you'll need to execute this command: 'php bot.php --send_convocations consultation=%s'.", array($this->id));
 		$html .= "</div>";
-		
 		return $html;
 	}
 	
+	function show_not_closed_sign() {
+		$html = "<div class=\"consultation-message\">";
+		$html .= __("This consultation is not closed yet.");
+		$html .= "</div>";
+		return $html;
+	}
+	
+	function show_already_closed_sign() {
+		$html = "<div class=\"consultation-message\">";
+		$html .= __("This consultation is already closed.");
+		$html .= "</div>";
+		return $html;
+	}
+
 	function show_already_opened_sign() {
 		$html = "<div class=\"consultation-message\">";
 		$html .= __("This consultation is already open.");
 		$html .= "</div>";
-		
 		return $html;
 	}
 
@@ -595,9 +755,12 @@ class Consultation extends Record {
 	function insert() {
 		$result = $this->db->id("
 			INSERT INTO consultations
-			SET name = ".$this->db->quote($this->name).",
+			SET token = ".$this->db->quote($this->token).",
+			name = ".$this->db->quote($this->name).",
 			description = ".$this->db->quote($this->description).",
+			email = ".$this->db->quote($this->email).",
 			comity_id = ".(int)$this->comity_id.",
+			emails = ".$this->db->quote($this->emails).",
 			start = ".(int)$this->start.",
 			stop = ".(int)$this->stop.",
 			elements = ".$this->db->quote(json_encode($this->elements)).",
@@ -613,9 +776,12 @@ class Consultation extends Record {
 	function update() {
 		$result = $this->db->query("
 			UPDATE consultations
-			SET name = ".$this->db->quote($this->name).",
+			SET token = ".$this->db->quote($this->token).",
+			name = ".$this->db->quote($this->name).",
 			description = ".$this->db->quote($this->description).",
+			email = ".$this->db->quote($this->email).",
 			comity_id = ".(int)$this->comity_id.",
+			emails = ".$this->db->quote($this->emails).",
 			start = ".(int)$this->start.",
 			stop = ".(int)$this->stop.",
 			elements = ".$this->db->quote(json_encode($this->elements)).",

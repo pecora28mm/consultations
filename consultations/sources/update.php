@@ -16,6 +16,18 @@ class Update {
 		$this->bigficheconfig = new Config_File(dirname(__FILE__)."/../configuration/configuration.php", "bigficheconfig");
 	}
 	
+	function to_4() {
+		$this->db->query("ALTER TABLE `consultations` ADD `email` MEDIUMTEXT NOT NULL DEFAULT '' AFTER `description`;");
+	}
+
+	function to_3() {
+		$this->db->query("ALTER TABLE `consultations` ADD `emails` MEDIUMTEXT NOT NULL DEFAULT '' AFTER `comity_id`;");
+	}
+
+	function to_2() {
+		$this->db->query("ALTER TABLE `consultations` ADD `token` VARCHAR(255) NOT NULL DEFAULT '' AFTER `id`;");
+	}
+
 	function to_1() {
 		$this->config->add("version", 0);
 	}

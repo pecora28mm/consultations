@@ -28,9 +28,12 @@ class Database_Tables_Source {
 			'consultations' => array(
 				"CREATE TABLE consultations (
 				  id INT(21) NOT NULL AUTO_INCREMENT,
+				  token VARCHAR(255) NOT NULL DEFAULT '',
 				  name MEDIUMTEXT NOT NULL DEFAULT '',
 				  description MEDIUMTEXT NOT NULL DEFAULT '',
+				  email MEDIUMTEXT NOT NULL DEFAULT '',
 				  comity_id INT(11) NOT NULL DEFAULT '0',
+				  emails MEDIUMTEXT NOT NULL DEFAULT '',
 				  start INT(10) NOT NULL DEFAULT '0',
 				  stop INT(10) NOT NULL DEFAULT '0',
 				  elements MEDIUMTEXT NOT NULL DEFAULT '',

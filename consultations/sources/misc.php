@@ -15,6 +15,10 @@ function __($string, $replacements = null) {
 	}
 }
 
+function is_email($email) {
+	return (preg_match("/[_a-z0-9-]+([\._a-z0-9-]+)*@[\._a-z0-9-]+(\.[a-z0-9-]{2,5})+/", $email));
+}
+
 function utf8_real_decode($string) {
 	if (extension_loaded("mbstring")) {
 		$real_decode = mb_convert_encoding($string, "ISO-8859-1", "UTF-8");

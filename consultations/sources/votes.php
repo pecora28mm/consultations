@@ -26,7 +26,7 @@ class Votes extends Collector {
 		if (isset($this->consultations_hash)) {
 			$where[] = "votes.consultations_hash = ".$this->db->quote($this->consultations_hash);
 		}
-		
+
 		return $where;
 	}
 }

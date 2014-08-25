@@ -7,11 +7,13 @@ if (isset($_GET['key'])) {
 	if ($preparation->charge_member_and_consultation_with_key($_GET['key'], $bigfichedb)) {
 		$_SESSION['consultation']['members_id'] = $preparation->member_id();
 		$_SESSION['consultation']['consultations_id'] = $preparation->consultation_id();
-		header("Location: ".$preparation->url_to_consultation());
+		header("Location: ".$preparation->url_to_procedure());
 	} else {
 		echo $preparation->show_wrong_convocation();
 	}
 } else {
-	echo $preparation->show_missing_convocation();
-	echo $preparation->link_asking_for_email();
+	echo $preparation->show_link_asking_for_email();
 }
+
+$consultation = new Consultation();
+echo $consultation->show_link_to_public_new();
