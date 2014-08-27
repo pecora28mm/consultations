@@ -135,8 +135,8 @@ class tests_Consultation extends TableTestCase {
 			'email' => "perrick@example.org",
 			'comity_id' => "42",
 			'emails' => "",
-			'start' => mktime(0, 0, 0, 0, 0, 0),
-			'stop' => mktime(0, 0, 0, 0, 0, 0),
+			'start' => 0,
+			'stop' => 0,
 			'elements' => array (
 			    'preambules' => array(), 
 			    'opinions' => array(),

@@ -6,6 +6,25 @@ class Consultations extends Collector {
 		parent::__construct("Consultation", "consultations", $db);
 	}
 	
+	function filter_out_by_comities_and_email($comity_ids, $email) {
+		$instances = array();
+		
+		foreach ($this as $i => $consultation) {
+			if ($consultation->comity_id > 0) {
+				if (in_array($consultation->comity_id, $comity_ids)) {
+					$instances[] = $consultation;
+				}
+			} else {
+				$emails = explode(" ", $consultation->emails);
+				if (in_array($email, $emails)) {
+					$instances[] = $consultation;
+				}
+			}
+		}
+		
+		$this->instances = $instances;
+	}
+
 	function select($raw = false) {
 		parent::select($raw);
 		foreach ($this as $id => $consultation) {

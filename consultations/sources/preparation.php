@@ -100,7 +100,8 @@ class Preparation {
 		$mail->Body .= __("The consultations team")."\n\n";
 debug::dump($member->email, $mail->Subject, $mail->Body);
 
-		return $mail->Send();
+		return true;
+// 		return $mail->Send();
 	}
 	
 	function is_key_coherent($key) {
@@ -227,10 +228,11 @@ debug::dump($member->email, $mail->Subject, $mail->Body);
 
 		$this->consultations = new Consultations();
 		if (count($comity_ids) > 0) {
-			$this->consultations->comity_id = $comity_ids;
 			$this->consultations->day = time();
 			$this->consultations->select();
+			$this->consultations->filter_out_by_comities_and_email($comity_ids, $this->member->email);
 			return true;
+
 		} else {
 			return false;
 		}

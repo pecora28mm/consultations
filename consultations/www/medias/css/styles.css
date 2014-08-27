@@ -30,3 +30,5 @@ div.container-max h2 { margin: 10px 0 10px 0; }
 .consultation-manage > .consultation-edit { width: 400px; font-weight: bold; }
 .consultation-manage > .consultation-time { width: 200px; }
 .consultation-manage > .consultation-results { width: 200px; }
+
+footer { margin-top: 50px; }

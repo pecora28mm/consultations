@@ -49,6 +49,7 @@ class Template {
 
 	function footer() {
 		return '
+		<footer></footer>
 		<script src="medias/js/jquery.js"></script>
 		<script src="medias/js/calendar.js"></script>
 		<script src="medias/js/common.jquery.js"></script>

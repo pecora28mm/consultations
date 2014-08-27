@@ -64,10 +64,6 @@ class Consultation extends Record {
 		return Html_Tag::a("index.php?page=consultation.php&token=".$this->token, __("Edit this consultation"));
 	}
 	
-	function link_to_public_results() {
-		return Html_Tag::a("index.php?page=results.php&token=".$this->token, __("Consult this consultation's results"));
-	}
-	
 	function show_trouble_with_numbers() {
 		$html = "<div class=\"consultation-error\">";
 		$html .= __("The number of answers is different from the number of choices times the number of votes: you should not validate the results.");
@@ -140,6 +136,8 @@ class Consultation extends Record {
 			'id' => isset($variables['id']) ? (int)$variables['id'] : 0,
 			'name' => isset($variables['name']) ? $variables['name'] : "",
 			'description' => isset($variables['description']) ? $variables['description'] : "",
+			'start' => 0,
+			'stop' => 0,
 			'email' => (isset($variables['email']) and is_email($variables['email'])) ? $variables['email'] : "",				
 			'comity_id' => isset($variables['comity_id']) ? (int)$variables['comity_id'] : 0,
 			'emails' => isset($variables['emails']) ? $variables['emails'] : "",
@@ -147,18 +145,22 @@ class Consultation extends Record {
 		);
 		
 		if (isset($variables['start'])) {
-			$Y = isset($variables['start']['Y']) ? (int)$variables['start']['Y'] : 0;
-			$m = isset($variables['start']['m']) ? (int)$variables['start']['m'] : 0;
-			$d = isset($variables['start']['d']) ? (int)$variables['start']['d'] : 0;
-			$cleaned['start'] = mktime(0, 0, 0, $m, $d, $Y);
+			if (isset($variables['start']['Y']) and (int)$variables['start']['Y'] > 0) {
+				$Y = isset($variables['start']['Y']) ? (int)$variables['start']['Y'] : 0;
+				$m = isset($variables['start']['m']) ? (int)$variables['start']['m'] : 0;
+				$d = isset($variables['start']['d']) ? (int)$variables['start']['d'] : 0;
+				$cleaned['start'] = mktime(0, 0, 0, $m, $d, $Y);
+			}
 		}
 		if (isset($variables['stop'])) {
-			$Y = isset($variables['stop']['Y']) ? (int)$variables['stop']['Y'] : 0;
-			$m = isset($variables['stop']['m']) ? (int)$variables['stop']['m'] : 0;
-			$d = isset($variables['stop']['d']) ? (int)$variables['stop']['d'] : 0;
-			$cleaned['stop'] = mktime(0, 0, 0, $m, $d, $Y);
+			if (isset($variables['stop']['Y']) and (int)$variables['stop']['Y'] > 0) {
+				$Y = isset($variables['stop']['Y']) ? (int)$variables['stop']['Y'] : 0;
+				$m = isset($variables['stop']['m']) ? (int)$variables['stop']['m'] : 0;
+				$d = isset($variables['stop']['d']) ? (int)$variables['stop']['d'] : 0;
+				$cleaned['stop'] = mktime(23, 59, 59, $m, $d, $Y);
+			}
 		}
-		
+
 		$cleaned['elements']['preambules'] = array();
 		if (isset($variables['elements']['preambules']) and is_array($variables['elements']['preambules'])) {
 			foreach ($variables['elements']['preambules'] as $preambule) {
@@ -460,7 +462,7 @@ class Consultation extends Record {
 	}
 	
 	function is_closed() {
-		if (!isset($this->start) or !isset($this->stop)) {
+		if ($this->start == 0 or $this->stop == 0) {
 			return false;
 		}
 		
@@ -472,7 +474,7 @@ class Consultation extends Record {
 	}
 	
 	function is_open() {
-		if (!isset($this->start) or !isset($this->stop)) {
+		if ($this->start == 0 or $this->stop == 0) {
 			return false;
 		}
 
@@ -616,8 +618,8 @@ class Consultation extends Record {
 			
 			$html .= "<dl class=\"consultation-answers dl-horizontal\">";
 			foreach ($answers as $answer) {
-				$html .= "<dt>".$answer->choice."</dt>";
-				$html .= "<dd>".$answer->position."</dd>";
+				$html .= "<dt>".$answer->position."</dt>";
+				$html .= "<dd>".$answer->choice."</dd>";
 			}
 			$html .= "</dl>";
 			

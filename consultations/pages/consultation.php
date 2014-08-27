@@ -22,19 +22,22 @@ if (isset($_POST['consultation'])) {
 $consultation = new Consultation();
 $consultation->load($consultation_id);
 
-
-if ($consultation->is_open() or $consultation->is_closed()) {
+if ($consultation->is_closed()) {
+	echo "<h2>".__("Show the results for the consultation '%s'", array($consultation->name))."</h2>";
+	echo $consultation->show_results();
+	echo "<h2>".__("Show the verifications for the consultation '%s'", array($consultation->name))."</h2>";
+	echo $consultation->show_verifications();
+	
+} elseif ($consultation->is_open()) {
 	echo "<h2>".__("Show the consultation '%s'", array($consultation->name))."</h2>";
 	echo $consultation->show();
-} else {
-	if ($consultation->id > 0) {
-		echo "<h2>".__("Edit the consultation '%s'", array($consultation->name))."</h2>";
-	} else {
-		echo "<h2>".__("Create a new consultation")."</h2>";
-	}
+	
+} elseif ($consultation->id > 0) {
+	echo "<h2>".__("Edit the consultation '%s'", array($consultation->name))."</h2>";
 	echo $consultation->edit();
-}
-if ($consultation->id > 0) {
 	echo $consultation->help_sending_convocations();
-	echo $consultation->show_link_to_public_results();
+	
+} else {
+	echo "<h2>".__("Create a new consultation")."</h2>";
+	echo $consultation->edit();
 }
