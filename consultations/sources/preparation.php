@@ -101,10 +101,12 @@ class Preparation {
 		$mail->Body .= __("The consultations team")."\n\n";
 
 		if ($GLOBALS['config']['email_send']) {
-			$mail->IsSMTP();
-			$mail->Host = $GLOBALS['config']['smtp_host'];
-			$mail->Port = $GLOBALS['config']['smtp_port'];
-			$mail->SMTPAuth = false;
+			if (!empty($GLOBALS['config']['smtp_host'])) {
+				$mail->IsSMTP();
+				$mail->Host = $GLOBALS['config']['smtp_host'];
+				$mail->Port = $GLOBALS['config']['smtp_port'];
+				$mail->SMTPAuth = false;
+			}
 	 		return $mail->Send();
 		} else {
 			return false;
