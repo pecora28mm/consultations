@@ -90,6 +90,7 @@ class Preparation {
 		require_once __DIR__."/../libraries/phpmailer/class.phpmailer.php";
 		
 		$mail = new PHPMailer();
+		$mail->CharSet = "utf-8";
 		$mail->AddAddress($member->email, $member->prenom." ".$member->nom);
 		$mail->From = $GLOBALS['param']['preparation_email'];
 		$mail->FromName = __("Consultations' tool");
@@ -98,10 +99,16 @@ class Preparation {
 		$mail->Body .= __("Please use the link below to vote about \"%s\"?", array($consultation->elements['question']))."\n\n";
 		$mail->Body .= $this->url_to_convocation($member, $consultation)."\n\n";
 		$mail->Body .= __("The consultations team")."\n\n";
-debug::dump($member->email, $mail->Subject, $mail->Body);
 
-		return true;
-// 		return $mail->Send();
+		if ($GLOBALS['config']['email_send']) {
+			$mail->IsSMTP();
+			$mail->Host = $GLOBALS['config']['smtp_host'];
+			$mail->Port = $GLOBALS['config']['smtp_port'];
+			$mail->SMTPAuth = false;
+	 		return $mail->Send();
+		} else {
+			return false;
+		}
 	}
 	
 	function is_key_coherent($key) {

@@ -6,6 +6,9 @@ $config['title'] = "consultations";
 $config['version'] = "1";
 $config['url'] = "http://localhost/~perrick/nouvelledonne-consultations/consultations/www/";
 $config['layout_mediaserver'] = "";
+$config['email_send'] = "0";
+$config['smtp_host'] = "";
+$config['smtp_port'] = "25";
 
 $dbconfig['type'] = "mysql";
 $dbconfig['host'] = "localhost";

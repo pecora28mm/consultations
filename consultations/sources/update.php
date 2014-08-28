@@ -16,6 +16,12 @@ class Update {
 		$this->bigficheconfig = new Config_File(dirname(__FILE__)."/../configuration/configuration.php", "bigficheconfig");
 	}
 	
+	function to_5() {
+		$this->config->add("email_send", 0);
+		$this->config->add("smtp_host", "");
+		$this->config->add("smtp_port", "25");
+	}
+
 	function to_4() {
 		$this->db->query("ALTER TABLE `consultations` ADD `email` MEDIUMTEXT NOT NULL DEFAULT '' AFTER `description`;");
 	}

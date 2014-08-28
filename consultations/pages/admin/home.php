@@ -5,5 +5,6 @@ $consultation = new Consultation();
 echo $consultation->link_to_new();
 
 $consultations = new Consultations();
+$consultations->set_order("time", "DESC");
 $consultations->select();
 echo $consultations->manage();
