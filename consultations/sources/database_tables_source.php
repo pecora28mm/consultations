@@ -34,6 +34,7 @@ class Database_Tables_Source {
 				  email MEDIUMTEXT NOT NULL DEFAULT '',
 				  comity_id INT(11) NOT NULL DEFAULT '0',
 				  emails MEDIUMTEXT NOT NULL DEFAULT '',
+				  everyone TINYINT(4) NOT NULL DEFAULT '0',
 				  start INT(10) NOT NULL DEFAULT '0',
 				  stop INT(10) NOT NULL DEFAULT '0',
 				  elements MEDIUMTEXT NOT NULL DEFAULT '',

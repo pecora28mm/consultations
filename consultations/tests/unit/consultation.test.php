@@ -20,6 +20,7 @@ class tests_Consultation extends TableTestCase {
 		$consultation->email = "perrick@noparking.net";
 		$consultation->comity_id = 12;
 		$consultation->emails = "perrick@noparking.net";
+		$consultation->everyone = 0;
 		$consultation->start = 123;
 		$consultation->stop = 1234;
 		$this->assertTrue($consultation->save());
@@ -37,6 +38,16 @@ class tests_Consultation extends TableTestCase {
 		$this->assertEqual($consultation_loaded->emails, $consultation->emails);
 		$this->assertEqual($consultation_loaded->start, $consultation->start);
 		$this->assertEqual($consultation_loaded->stop, $consultation->stop);
+		
+		$consultation->comity_id = 0;
+		$consultation->everyone = 1;
+		$this->assertTrue($consultation->save());
+		
+		$consultation_loaded = new Consultation();
+		$consultation_loaded->load($consultation->id);
+		$this->assertEqual($consultation_loaded->id, $consultation->id);
+		$this->assertEqual($consultation_loaded->comity_id, $consultation->comity_id);
+		$this->assertEqual($consultation_loaded->everyone, $consultation->everyone);
 		
 		$this->truncateTables("consultations");
 	}
@@ -69,6 +80,7 @@ class tests_Consultation extends TableTestCase {
 				'email' => "perrick@example.org",
 				'comity_id' => "42",
 				'emails' => "perrick@example.org",
+				'everyone' => "1",
 				'start' =>  array (
 				  'd' => '',
 				  'm' => '',
@@ -135,6 +147,7 @@ class tests_Consultation extends TableTestCase {
 			'email' => "perrick@example.org",
 			'comity_id' => "42",
 			'emails' => "",
+			'everyone' => "0",
 			'start' => 0,
 			'stop' => 0,
 			'elements' => array (

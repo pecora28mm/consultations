@@ -9,6 +9,7 @@ class Consultation extends Record {
 	public $email = "";
 	public $comity_id = 0;
 	public $emails = "";
+	public $everyone = 0;
 	public $start = 0;
 	public $stop = 0;
 	public $elements = array();
@@ -141,6 +142,7 @@ class Consultation extends Record {
 			'email' => (isset($variables['email']) and is_email($variables['email'])) ? $variables['email'] : "",				
 			'comity_id' => isset($variables['comity_id']) ? (int)$variables['comity_id'] : 0,
 			'emails' => isset($variables['emails']) ? $variables['emails'] : "",
+			'everyone' => isset($variables['everyone']) ? (int)$variables['everyone'] : 0,
 			'elements' => array()
 		);
 		
@@ -196,8 +198,10 @@ class Consultation extends Record {
 
 		if ($cleaned['comity_id'] > 0) {
 			$cleaned['emails'] = "";
-		} else {
+			$cleaned['everyone'] = 0;
+		} elseif (!empty($cleaned['emails'])) {
 			$cleaned['emails'] = $this->clean_emails($cleaned['emails']);
+			$cleaned['everyone'] = 0;
 		}
 		
 		return $cleaned;
@@ -313,9 +317,11 @@ class Consultation extends Record {
 		$html .= "<fieldset>";
 		$html .= "<legend>".__("Voters")."</legend>";
 		$comity_id = new Html_Select("consultation[comity_id]", array('--' => "--") + $comities->names(), $this->comity_id);
-		$html .= $comity_id->paragraph(__("Comity"));
+		$html .= $comity_id->paragraph(__("A comity"));
 		$emails = new Html_Textarea("consultation[emails]", $this->emails);
-		$html .= $emails->paragraph(__("Emails"));
+		$html .= $emails->paragraph(__("Some emails"));
+		$everyone = new Html_Radio("consultation[everyone]", array(0 => __("No"), 1 => __("Yes")), $this->everyone);
+		$html .= $everyone->paragraph(__("All members"));
 		$html .= "</fieldset>";
 		
 		$html .= "<fieldset>";
@@ -763,6 +769,7 @@ class Consultation extends Record {
 			email = ".$this->db->quote($this->email).",
 			comity_id = ".(int)$this->comity_id.",
 			emails = ".$this->db->quote($this->emails).",
+			everyone = ".(int)$this->everyone.",
 			start = ".(int)$this->start.",
 			stop = ".(int)$this->stop.",
 			elements = ".$this->db->quote(json_encode($this->elements)).",
@@ -784,6 +791,7 @@ class Consultation extends Record {
 			email = ".$this->db->quote($this->email).",
 			comity_id = ".(int)$this->comity_id.",
 			emails = ".$this->db->quote($this->emails).",
+			everyone = ".(int)$this->everyone.",
 			start = ".(int)$this->start.",
 			stop = ".(int)$this->stop.",
 			elements = ".$this->db->quote(json_encode($this->elements)).",

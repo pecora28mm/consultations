@@ -96,7 +96,7 @@ class Preparation {
 		$mail->FromName = __("Consultations' tool");
 		$mail->Subject = __("Consultation's convocation: %s", array($consultation->elements['question']));
 		$mail->Body = __("Hello %s,", array($member->prenom))."\n\n";
-		$mail->Body .= __("Please use the link below to vote about \"%s\"?", array($consultation->elements['question']))."\n\n";
+		$mail->Body .= __("Please use the link below to vote about \"%s\":", array($consultation->elements['question']))."\n\n";
 		$mail->Body .= $this->url_to_convocation($member, $consultation)."\n\n";
 		$mail->Body .= __("The consultations team")."\n\n";
 
@@ -236,12 +236,12 @@ class Preparation {
 		$comity_ids = $this->member->comity_ids();
 
 		$this->consultations = new Consultations();
-		if (count($comity_ids) > 0) {
-			$this->consultations->day = time();
-			$this->consultations->select();
-			$this->consultations->filter_out_by_comities_and_email($comity_ids, $this->member->email);
-			return true;
+		$this->consultations->day = time();
+		$this->consultations->filters = array('comity_id' => $comity_ids, 'emails' => $this->member->email, 'everyone' => 1);
+		$this->consultations->select();
 
+		if (count($this->consultations) > 0) {
+			return true;
 		} else {
 			return false;
 		}

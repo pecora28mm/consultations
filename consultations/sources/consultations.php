@@ -54,6 +54,25 @@ class Consultations extends Collector {
 	function get_where() {
 		$where = parent::get_where();
 		
+		if (isset($this->filters)) {
+			$filters = array();
+			if (isset($this->filters['comity_id'])) {
+				if (is_array($this->filters['comity_id']) and count($this->filters['comity_id']) > 0) {
+					$filters[] = "consultations.comity_id IN (".join(", ", $this->filters['comity_id']).")";
+				} else {
+					$filters[] = "consultations.comity_id = ".(int)$this->filters['comity_id'];
+				}
+			}
+			if (isset($this->filters['emails'])) {
+				$filters[] = "consultations.emails LIKE ('%".$this->filters['emails']."%')";
+			}
+			if (isset($this->filters['everyone'])) {
+				$filters[] = "consultations.everyone = ".(int)$this->filters['everyone'];
+			}
+			if (count($filters) > 0) {
+				$where[] = "(".join(" OR ", $filters).")";
+			}
+		}
 		if (isset($this->comity_id)) {
 			if (is_array($this->comity_id)) {
 				$where[] = "consultations.comity_id IN (".join(", ", $this->comity_id).")";
