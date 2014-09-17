@@ -105,9 +105,19 @@ class Preparation {
 				$mail->IsSMTP();
 				$mail->Host = $GLOBALS['config']['smtp_host'];
 				$mail->Port = $GLOBALS['config']['smtp_port'];
-				$mail->SMTPAuth = false;
+				if (!empty($GLOBALS['config']['smtp_user'])) {
+					$mail->SMTPAuth = true;
+					$mail->Username = $GLOBALS['config']['smtp_user'];
+					$mail->Password = $GLOBALS['config']['smtp_password'];
+				} else {
+					$mail->SMTPAuth = false;
+				}
 			}
-	 		return $mail->Send();
+			if ($mail->Send()) {
+				return true;
+			} else {
+	 			return false;
+			}
 		} else {
 			return false;
 		}
@@ -128,7 +138,7 @@ class Preparation {
 	}
 	
 	function hash_member_consultation(Member $member, Consultation $consultation) {
-		return md5($member->id."|".$consultation->id."|".$consultation->hash()."|".$GLOBALS['config']['url']);
+		return md5($member->id."|".$consultation->id."|".$consultation->hash()."|".$GLOBALS['param']['preparation_secret']);
 	}
 
 	function encode_member_consultation(Member $member, Consultation $consultation) {

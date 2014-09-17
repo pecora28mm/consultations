@@ -3,12 +3,14 @@
 
 $config['name'] = "Consultations Nouvelle Donne";
 $config['title'] = "consultations";
-$config['version'] = "1";
+$config['version'] = "7";
 $config['url'] = "http://localhost/~perrick/nouvelledonne-consultations/consultations/www/";
 $config['layout_mediaserver'] = "";
 $config['email_send'] = "0";
 $config['smtp_host'] = "";
 $config['smtp_port'] = "25";
+$config['smtp_user'] = "";
+$config['smtp_password'] = "";
 
 $dbconfig['type'] = "mysql";
 $dbconfig['host'] = "localhost";

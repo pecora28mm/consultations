@@ -16,6 +16,11 @@ class Update {
 		$this->bigficheconfig = new Config_File(dirname(__FILE__)."/../configuration/configuration.php", "bigficheconfig");
 	}
 	
+	function to_7() {
+		$this->config->add("smtp_user", "");
+		$this->config->add("smtp_password", "");
+	}
+
 	function to_6() {
 		$this->db->query("ALTER TABLE `consultations` ADD `everyone` TINYINT(4) NOT NULL DEFAULT '0' AFTER `emails`;");
 	}

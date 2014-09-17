@@ -72,7 +72,7 @@ class Vote extends Record {
 	
 	function show_summary() {
 		$html = "<div class=\"consultation-message-light\">";
-		$html .= __("Your vote has already been registered on <strong>%s</strong>.", array(date("d/m/Y H:i", $this->time)));
+		$html .= __("Your vote has already been registered on <strong>%s</strong>. If you try to re-vote, it will simply replace the preceding one.", array(date("d/m/Y H:i", $this->time)));
 		$html .= "</div>";
 		
 		return $html;

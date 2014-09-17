@@ -36,10 +36,10 @@ class tests_Preparation extends TableTestCase {
 	}
 
 	function test_encode_member_consultation() {
-		$GLOBALS['config']['url'] = "http://localhost/~perrick/nouvelledonne-consultations/consultations/www/";
+		$GLOBALS['param']['preparation_secret'] = "1234567890";
 		
 		$preparation = new Preparation();
-		$this->assertEqual("MXwxfGE5MDMzMDhjODZlZDczY2I4MDUyY2E3YTA2MTNhNDE0", $preparation->encode_member_consultation(new Member(1), new Consultation(1)));
+		$this->assertEqual("MXwxfDFiYWRjODYyN2Q3NTNjMmE2NDAwMjE2MzA5YmVlNTYw", $preparation->encode_member_consultation(new Member(1), new Consultation(1)));
 	}
 	
 	function test_charge_open_consultations_for_member__avec_everyone() {

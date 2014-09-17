@@ -607,7 +607,7 @@ class Consultation extends Record {
 	function show_summary($member) {
 		$vote = new Vote();
 		$vote->charge($this, $member);
-		if ($vote->match_existing(array("members_id", "consultations_hash"))) {
+		if ($vote->match_existing(array("members_id", "consultations_id"))) {
 			$vote->load();
 		}
 		if ($vote->is_done()) {
@@ -617,21 +617,28 @@ class Consultation extends Record {
 			$html .= "</div>";
 			
 			$answers = new Answers();
-			$answers->consultations_hash = $this->hash();
+			$answers->consultations_id = $this->id;
 			$answers->members_id = $vote->members_id;
 			$answers->set_order("position", "ASC");
 			$answers->select();
 			
+			$choices = array();
+			foreach ($this->elements['choices'] as $choice) {
+				$choices[$choice['tag']] = $choice['description'];
+			}
+			
 			$html .= "<dl class=\"consultation-answers dl-horizontal\">";
 			foreach ($answers as $answer) {
 				$html .= "<dt>".$answer->position."</dt>";
-				$html .= "<dd>".$answer->choice."</dd>";
+				$html .= "<dd>".(isset($choices[$answer->choice]) ? $choices[$answer->choice] : $answer->choice)."</dd>";
+				$hash = $answer->consultations_hash;
 			}
 			$html .= "</dl>";
 			
 			$html .= "<div class=\"consultation-information\">";
 			$html .= __("If you want to change your answers, you can still change them.");
 			$html .= "</div>";
+			
 			$html .= "<p class=\"consultation-next btn btn-success\">".Html_Tag::a($this->url_to_thankyou(), __("Agree with this vote"))."</p>";
 			$html .= "<p class=\"consultation-next btn btn-warning\">".Html_Tag::a($this->url_to_vote(), __("Move back to vote"))."</p>";
 				

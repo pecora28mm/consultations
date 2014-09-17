@@ -104,6 +104,7 @@ $__['Stop'] = "Fin";
 $__['Summary'] = "Récapitulatif";
 $__['Thank you for voting.'] = "Merci d'avoir voté.";
 $__['The consultations team'] = "L'équipe des consultations";
+$__['The creation of a new consultation is only possible by an administrator. If you want to create one, you can <a href="mailto:%s">contact them by email</a>.'] = "La création d'une nouvelle consultation est réservé aux administrateurs. Si vous souhaitez en créer une, vous pouvez <a href=\"mailto:%s\">les contacter par email</a>.";
 $__['The hashes for this consultation, these votes and these answers are troublesome: you should not validate the results.'] = "Les clés de hashage pour cette consultation avec ces votes et ces réponses posent problème : vous ne devriez pas valider ces résultats.";
 $__['The number of answers is different from the number of choices times the number of votes: you should not validate the results.'] = "Le nombre de réponses est différent du nombre de choix fois le nombre de votes : vous ne devriez pas valider ces résultats.";
 $__['This consultation has already started.'] = "Cette consultation a d'ores et déjà commencé";
@@ -129,4 +130,4 @@ $__['Your answers were found : you\'ll find them below.'] = "Vos choix ont bien 
 $__['Your answers were not found. Please vote first.'] = "Vos choix n'ont pas été trouvés. Merci de bien vouloir commencer par voter.";
 $__['Your answers were not saved. Please contact the technical team : %s.'] = "Vos choix n'ont pas été sauvegardés. Merci de bien vouloir contacter l'équipe technique : %s";
 $__['Your convocation(s) have been sent : please check your emails in order to proceed to the vote.'] = "Votre (ou vos) convocation a bien été envoyée : merci de consulter vos emails afin de procéder au vote.";
-$__['Your vote has already been registered on <strong>%s</strong>.'] = "Votre vote a déjà été pris en compte le <strong>%s</strong>.";
+$__['Your vote has already been registered on <strong>%s</strong>. If you try to re-vote, it will simply replace the preceding one.'] = "Votre vote a déjà été pris en compte le <strong>%s</strong>. Si vous re-votez, le précédent sera simplement remplacé.";
