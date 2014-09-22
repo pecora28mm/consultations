@@ -8,6 +8,7 @@ class Consultation extends Record {
 	public $description = "";
 	public $email = "";
 	public $comity_id = 0;
+	public $postcode = "";
 	public $emails = "";
 	public $everyone = 0;
 	public $start = 0;
@@ -141,6 +142,7 @@ class Consultation extends Record {
 			'stop' => 0,
 			'email' => (isset($variables['email']) and is_email($variables['email'])) ? $variables['email'] : "",				
 			'comity_id' => isset($variables['comity_id']) ? (int)$variables['comity_id'] : 0,
+			'postcode' => isset($variables['postcode']) ? $variables['postcode'] : "",
 			'emails' => isset($variables['emails']) ? $variables['emails'] : "",
 			'everyone' => isset($variables['everyone']) ? (int)$variables['everyone'] : 0,
 			'elements' => array()
@@ -198,13 +200,35 @@ class Consultation extends Record {
 
 		if ($cleaned['comity_id'] > 0) {
 			$cleaned['emails'] = "";
+			$cleaned['postcode'] = "";
 			$cleaned['everyone'] = 0;
 		} elseif (!empty($cleaned['emails'])) {
 			$cleaned['emails'] = $this->clean_emails($cleaned['emails']);
+			$cleaned['postcode'] = "";
+			$cleaned['everyone'] = 0;
+		} elseif (!empty($cleaned['postcode'])) {
+			$cleaned['postcode'] = $this->clean_postcode($cleaned['postcode']);
 			$cleaned['everyone'] = 0;
 		}
 		
 		return $cleaned;
+	}
+	
+	function clean_postcode($postcode) {
+		$postcode = str_replace(",", " ", $postcode);
+		$postcode = str_replace(";", " ", $postcode);
+		$postcode = str_replace("\r", " ", $postcode);
+		$postcode = str_replace("\n", " ", $postcode);
+		$postcode = str_replace("\t", " ", $postcode);
+		$elements = explode(" ", $postcode);
+		$postcode = "";
+		foreach ($elements as $element) {
+			if (strlen($element) == 2) {
+				$postcode .= " ".$element;
+			}
+		}
+
+		return trim($postcode);
 	}
 	
 	function clean_emails($emails) {
@@ -318,6 +342,8 @@ class Consultation extends Record {
 		$html .= "<legend>".__("Voters")."</legend>";
 		$comity_id = new Html_Select("consultation[comity_id]", array('--' => "--") + $comities->names(), $this->comity_id);
 		$html .= $comity_id->paragraph(__("A comity"));
+		$postcode = new Html_Textarea("consultation[postcode]", $this->postcode);
+		$html .= $postcode->paragraph(__("Some departement numbers"));
 		$emails = new Html_Textarea("consultation[emails]", $this->emails);
 		$html .= $emails->paragraph(__("Some emails"));
 		$everyone = new Html_Radio("consultation[everyone]", array(0 => __("No"), 1 => __("Yes")), $this->everyone);
@@ -775,6 +801,7 @@ class Consultation extends Record {
 			description = ".$this->db->quote($this->description).",
 			email = ".$this->db->quote($this->email).",
 			comity_id = ".(int)$this->comity_id.",
+			postcode = ".$this->db->quote($this->postcode).",
 			emails = ".$this->db->quote($this->emails).",
 			everyone = ".(int)$this->everyone.",
 			start = ".(int)$this->start.",
@@ -797,6 +824,7 @@ class Consultation extends Record {
 			description = ".$this->db->quote($this->description).",
 			email = ".$this->db->quote($this->email).",
 			comity_id = ".(int)$this->comity_id.",
+			postcode = ".$this->db->quote($this->postcode).",
 			emails = ".$this->db->quote($this->emails).",
 			everyone = ".(int)$this->everyone.",
 			start = ".(int)$this->start.",

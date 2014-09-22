@@ -16,6 +16,10 @@ class Update {
 		$this->bigficheconfig = new Config_File(dirname(__FILE__)."/../configuration/configuration.php", "bigficheconfig");
 	}
 	
+	function to_8() {
+		$this->db->query("ALTER TABLE `consultations` ADD `postcode` MEDIUMTEXT NOT NULL DEFAULT '' AFTER `comity_id`;");
+	}
+
 	function to_7() {
 		$this->config->add("smtp_user", "");
 		$this->config->add("smtp_password", "");

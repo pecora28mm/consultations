@@ -51,7 +51,7 @@ class tests_Preparation extends TableTestCase {
 		$consultation->description = "Première description";
 		$consultation->start = strtotime("-2 days", time());
 		$consultation->stop = strtotime("+2 days", time());
-		$consultation->everyone = 0;
+		$consultation->everyone = 1;
 		$consultation->save();
 		
 		$this->assertFalse($preparation->charge_open_consultations_for_member());
@@ -66,6 +66,32 @@ class tests_Preparation extends TableTestCase {
 		$this->truncateTables("consultations", "members");
 	}
 	
+	function test_charge_open_consultations_for_member__avec_postcode() {
+		$preparation = new Preparation();
+		$this->assertFalse($preparation->charge_open_consultations_for_member());
+		
+		$consultation = new Consultation();
+		$consultation->name = "Consultation avec code postal";
+		$consultation->description = "Première description";
+		$consultation->start = strtotime("-2 days", time());
+		$consultation->stop = strtotime("+2 days", time());
+		$consultation->postcode = "59 62";
+		$consultation->save();
+		
+		$this->assertFalse($preparation->charge_open_consultations_for_member());
+
+		$member = new Member();
+		$member->nom = "Penet";
+		$member->email = "perrick@noparking.net";
+		$member->codepostal = "59000";
+		$member->save();
+		
+		$this->assertTrue($preparation->charge_open_consultations_for_member($member));
+		$this->assertEqual(count($preparation->consultations), 1);
+		
+		$this->truncateTables("consultations");
+	}
+
 	function test_charge_open_consultations_for_member() {
 		$preparation = new Preparation();
 		$this->assertFalse($preparation->charge_open_consultations_for_member());

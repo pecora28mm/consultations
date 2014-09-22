@@ -93,6 +93,7 @@ $__['seems OK'] = "semble OK";
 $__['Show the consultation \'%s\''] = "Afficher la consultation '%s'";
 $__['Show the results for the consultation \'%s\''] = "Afficher les résultats de la consultation '%s'";
 $__['Show the verifications for the consultation \'%s\''] = "Afficher les vérifications de la consultation '%s'";
+$__['Some departement numbers'] = "Des codes départementaux (de 2 caractères)";
 $__['Some emails'] = "Des emails";
 $__['Sorry, no consultation is currently accessible to you.'] = "Désolé, aucune consultation ne vous est accessible en ce moment.";
 $__['Sorry, there was an error while sending your convocation by email.'] = "Désolé, il y a eu une erreur à l'envoi de votre convocation par email.";

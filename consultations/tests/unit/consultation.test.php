@@ -40,6 +40,19 @@ class tests_Consultation extends TableTestCase {
 		$this->assertEqual($consultation_loaded->stop, $consultation->stop);
 		
 		$consultation->comity_id = 0;
+		$consultation->postcode = "^[59|62]";
+		$consultation->everyone = 0;
+		$this->assertTrue($consultation->save());
+		
+		$consultation_loaded = new Consultation();
+		$consultation_loaded->load($consultation->id);
+		$this->assertEqual($consultation_loaded->id, $consultation->id);
+		$this->assertEqual($consultation_loaded->comity_id, 0);
+		$this->assertEqual($consultation_loaded->postcode, "^[59|62]");
+		$this->assertEqual($consultation_loaded->everyone, 0);
+		
+		$consultation->comity_id = 0;
+		$consultation->postcode = "";
 		$consultation->everyone = 1;
 		$this->assertTrue($consultation->save());
 		
@@ -47,11 +60,31 @@ class tests_Consultation extends TableTestCase {
 		$consultation_loaded->load($consultation->id);
 		$this->assertEqual($consultation_loaded->id, $consultation->id);
 		$this->assertEqual($consultation_loaded->comity_id, $consultation->comity_id);
-		$this->assertEqual($consultation_loaded->everyone, $consultation->everyone);
+		$this->assertEqual($consultation_loaded->postcode, "");
+		$this->assertEqual($consultation_loaded->everyone, 1);
 		
 		$this->truncateTables("consultations");
 	}
 	
+	function test_clean_postcode() {
+		$consultation = new Consultation();
+		
+		$emails = "5900,  62";
+		$this->assertEqual($consultation->clean_postcode($emails), "62");
+
+		$emails = "59;  62";
+		$this->assertEqual($consultation->clean_postcode($emails), "59 62");
+
+		$emails = "59\n62";
+		$this->assertEqual($consultation->clean_postcode($emails), "59 62");
+
+		$emails = "59 \t 62";
+		$this->assertEqual($consultation->clean_postcode($emails), "59 62");
+
+		$emails = "59 \r 62";
+		$this->assertEqual($consultation->clean_postcode($emails), "59 62");
+	}
+
 	function test_clean_emails() {
 		$consultation = new Consultation();
 		
@@ -71,6 +104,98 @@ class tests_Consultation extends TableTestCase {
 		$this->assertEqual($consultation->clean_emails($emails), "perrick@example.com thomas@example.fr");
 	}
 
+	function test_clean__avec_postcode() {
+		$post = array (
+			'consultation' => array(
+				'id' => "42-test",
+				'name' => "42ème test",
+				'description' => "Desc. du 42ème test",
+				'email' => "perrick@example.org",
+				'comity_id' => "",
+				'emails' => "",
+				'postcode' => "59000 62  80",
+				'everyone' => "1",
+				'start' =>  array (
+				  'd' => '',
+				  'm' => '',
+				  'Y' => '',
+				),
+				'stop' => array (
+				  'd' => '',
+				  'm' => '',
+				  'Y' => '',
+				),
+				'elements' => array (
+				    'preambules' => array (
+				      1 => array (
+				        'url' => '',
+				        'title' => '',
+				      ),
+				      2 => array (
+				        'url' => '',
+				        'title' => '',
+				      ),
+				      3 => array (
+				        'url' => '',
+				        'title' => '',
+				      ),
+				    ),
+				    'opinions' => array (
+				      0 => array (
+				        'url' => '',
+				        'title' => '',
+				      ),
+				      1 => array (
+				        'url' => '',
+				        'title' => '',
+				      ),
+				      2 => array (
+				        'url' => '',
+				        'title' => '',
+				      ),
+				    ),
+				    'question' => '',
+				    'choices' => array (
+				      0 => array (
+				        'tag' => '',
+				        'description' => '',
+				      ),
+				      1 => array (
+				        'tag' => '',
+				        'description' => '',
+				      ),
+				      2 => array (
+				        'tag' => '',
+				        'description' => '',
+				      ),
+				    ),
+				  ),
+			),
+			'save' => 'Sauvegarder',
+		);
+		
+		$cleaned = array (
+			'id' => "42",
+			'name' => "42ème test",
+			'description' => "Desc. du 42ème test",
+			'email' => "perrick@example.org",
+			'comity_id' => 0,
+			'postcode' => "62 80",
+			'emails' => "",
+			'everyone' => "0",
+			'start' => 0,
+			'stop' => 0,
+			'elements' => array (
+			    'preambules' => array(), 
+			    'opinions' => array(),
+			    'question' => '',
+			    'choices' => array(),
+			),
+		);
+		$consultation = new Consultation();
+		$this->assertEqual($consultation->clean($post['consultation']), $cleaned);
+	}
+	
 	function test_clean() {
 		$post = array (
 			'consultation' => array(
@@ -147,6 +272,7 @@ class tests_Consultation extends TableTestCase {
 			'email' => "perrick@example.org",
 			'comity_id' => "42",
 			'emails' => "",
+			'postcode' => "",
 			'everyone' => "0",
 			'start' => 0,
 			'stop' => 0,

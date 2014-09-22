@@ -243,11 +243,24 @@ class Preparation {
 			return false;
 		}
 		
+		$filters = array(
+			'emails' => $this->member->email,
+			'everyone' => 1,
+		);
+		
+		$postcode = substr($this->member->codepostal, 0, 2);
+		if (strlen($postcode) == 2) {
+			$filters['postcode'] = $postcode;
+		}
+		
 		$comity_ids = $this->member->comity_ids();
-
+		if (count($comity_ids) > 0) {
+			$filters['comity_id'] = $comity_ids;
+		}
+		
 		$this->consultations = new Consultations();
 		$this->consultations->day = time();
-		$this->consultations->filters = array('comity_id' => $comity_ids, 'emails' => $this->member->email, 'everyone' => 1);
+		$this->consultations->filters = $filters;
 		$this->consultations->select();
 
 		if (count($this->consultations) > 0) {

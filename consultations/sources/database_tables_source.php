@@ -32,6 +32,7 @@ class Database_Tables_Source {
 				  name MEDIUMTEXT NOT NULL DEFAULT '',
 				  description MEDIUMTEXT NOT NULL DEFAULT '',
 				  email MEDIUMTEXT NOT NULL DEFAULT '',
+				  postcode MEDIUMTEXT NOT NULL DEFAULT '',
 				  comity_id INT(11) NOT NULL DEFAULT '0',
 				  emails MEDIUMTEXT NOT NULL DEFAULT '',
 				  everyone TINYINT(4) NOT NULL DEFAULT '0',

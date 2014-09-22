@@ -66,6 +66,9 @@ class Consultations extends Collector {
 			if (isset($this->filters['emails'])) {
 				$filters[] = "consultations.emails LIKE ('%".$this->filters['emails']."%')";
 			}
+			if (isset($this->filters['postcode'])) {
+				$filters[] = "consultations.postcode LIKE ('%".$this->filters['postcode']."%')";
+			}
 			if (isset($this->filters['everyone'])) {
 				$filters[] = "consultations.everyone = ".(int)$this->filters['everyone'];
 			}
