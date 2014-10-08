@@ -253,10 +253,10 @@ class Preparation {
 			$filters['postcode'] = $postcode;
 		}
 		
-		$comity_ids = $this->member->comity_ids();
-		if (count($comity_ids) > 0) {
-			$filters['comity_id'] = $comity_ids;
-		}
+// 		$comity_ids = $this->member->comity_ids();
+// 		if (count($comity_ids) > 0) {
+// 			$filters['comity_id'] = $comity_ids;
+// 		}
 		
 		$this->consultations = new Consultations();
 		$this->consultations->day = time();
