@@ -325,8 +325,8 @@ class Consultation extends Record {
 		$id = new Html_Input("consultation[id]", $this->id);
 		$html .= $id->input_hidden();
 		
-		$comities = new Comities(new Db($GLOBALS['bigficheconfig']));
-		$comities->select();
+// 		$comities = new Comities(new Db($GLOBALS['bigficheconfig']));
+// 		$comities->select();
 
 		$html .= "<fieldset>";
 		$html .= "<legend>".__("Presentation")."</legend>";
@@ -340,7 +340,7 @@ class Consultation extends Record {
 
 		$html .= "<fieldset>";
 		$html .= "<legend>".__("Voters")."</legend>";
-		$comity_id = new Html_Select("consultation[comity_id]", array('--' => "--") + $comities->names(), $this->comity_id);
+		$comity_id = new Html_Select("consultation[comity_id]", array('--' => "--"), $this->comity_id);
 		$html .= $comity_id->paragraph(__("A comity"));
 		$postcode = new Html_Textarea("consultation[postcode]", $this->postcode);
 		$html .= $postcode->paragraph(__("Some departement numbers"));
