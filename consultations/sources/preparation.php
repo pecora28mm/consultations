@@ -64,28 +64,7 @@ class Preparation {
 		}
 		return $result;
 	}
-	
-	function send_convocations_for_consultation($consultation = null) {
-		if ($consultation !== null and $consultation instanceof Consultation) {
-			$this->consultation = $consultation;
-		}
-		if (!($this->consultation instanceof Consultation)) {
-			return false;
-		}
-		
-		$bigfichedb = new Db($GLOBALS['bigficheconfig']);
-		
-		$members = new Members($bigfichedb);
-		$members->comity_id = (int)$this->consultation->comity_id;
-		$members->select();
-		
-		$result = true;
-		foreach ($members as $member) {
-			$result = (bool)($result and $this->send_convocation($member, $this->consultation));
-		}
-		return $result;
-	}
-	
+
 	function send_convocation($member, $consultation) {
 		require_once __DIR__."/../libraries/phpmailer/class.phpmailer.php";
 		
